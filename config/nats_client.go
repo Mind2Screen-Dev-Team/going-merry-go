@@ -39,7 +39,7 @@ func (n *NatsClient) Create(_ context.Context) (*nats.Conn, error) {
 	)
 }
 
-func (n *NatsClient) Loader(ctx context.Context, app *bootstrap.Dependency) {
+func (n *NatsClient) Loader(ctx context.Context, app *bootstrap.AppDependency) {
 	app.NatsConn = lazy.New(func() (*nats.Conn, error) {
 		return n.Create(ctx)
 	})

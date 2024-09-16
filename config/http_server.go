@@ -14,7 +14,7 @@ import (
 
 type HTTPServer struct {
 	appConfig     *appconfig.AppConfig
-	appDependency *bootstrap.Dependency
+	appDependency *bootstrap.AppDependency
 
 	handler http.Handler
 	option  *httpServerOptionValue
@@ -29,7 +29,7 @@ type httpServerOptionValue struct {
 
 func NewHTTPServer(
 	appConfig *appconfig.AppConfig,
-	appDependency *bootstrap.Dependency,
+	appDependency *bootstrap.AppDependency,
 	handler http.Handler,
 	opts ...HttpServerOptionFn,
 ) (*HTTPServer, error) {
@@ -46,7 +46,7 @@ func NewHTTPServer(
 
 func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
 	return &http.Server{
-		Addr:              fmt.Sprintf("%s:%d", h.appConfig.AppHost, h.appConfig.AppHttpPort),
+		Addr:              fmt.Sprintf("%s:%d", h.appConfig.AppHost, h.appConfig.AppHttp.Port),
 		Handler:           h.handler,
 		IdleTimeout:       h.option.IdleTimeout,
 		ReadHeaderTimeout: h.option.ReadHeaderTimeout,

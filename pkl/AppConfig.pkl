@@ -7,13 +7,24 @@ import "RedisConfig.pkl"
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
 
+class AppHttp {
+    port: Int
+    idleTimeout: Int
+    readHeaderTimeout: Int
+    readTimeout: Int
+    writeTimeout: Int
+    handlerTimeout: Int
+}
+
 // main app configuration
 appName: String
 appDomain: String
 appHost: String
-appHttpPort: Int
 appJwtSecret: String
 appLogPath: String
+
+// app http configuration
+appHttp: AppHttp
 
 // mysql configuration
 mysql: MySQLConfig

@@ -46,7 +46,7 @@ func (s *MySQLX) Create(_ context.Context) (db *sqlx.DB, err error) {
 	return db, err
 }
 
-func (s *MySQLX) Loader(ctx context.Context, app *bootstrap.Dependency) {
+func (s *MySQLX) Loader(ctx context.Context, app *bootstrap.AppDependency) {
 	app.MySqlDB = lazy.New(func() (db *sqlx.DB, err error) {
 		return s.Create(ctx)
 	})

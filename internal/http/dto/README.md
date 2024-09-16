@@ -1,1 +1,1 @@
-# Assets
+# DTO (Data Transfer Object)

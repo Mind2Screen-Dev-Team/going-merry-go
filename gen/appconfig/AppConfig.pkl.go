@@ -17,11 +17,11 @@ type AppConfig struct {
 
 	AppHost string `pkl:"appHost"`
 
-	AppHttpPort int `pkl:"appHttpPort"`
-
 	AppJwtSecret string `pkl:"appJwtSecret"`
 
 	AppLogPath string `pkl:"appLogPath"`
+
+	AppHttp *AppHttp `pkl:"appHttp"`
 
 	Mysql *mysqlconfig.MySQLConfig `pkl:"mysql"`
 
