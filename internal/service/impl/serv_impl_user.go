@@ -24,6 +24,7 @@ func NewUserServiceImpl() *userServiceImpl {
 
 func (r *userServiceImpl) Loader(ctx context.Context, appDependency *bootstrap.AppDependency, appRepository *bootstrap.AppRepository, appService *bootstrap.AppService) {
 	r.redis = &appDependency.Redis
+	r.user = appRepository.User
 	appService.User = r
 }
 
