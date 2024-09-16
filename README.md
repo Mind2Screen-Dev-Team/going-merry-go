@@ -1,0 +1,2 @@
+- https://www.freedium.cfd/https://medium.com/@sddkal/use-betteralign-to-optimize-go-memory-consumption-3736a3172860
+- go install github.com/essentialkaos/aligo/v2@latest
