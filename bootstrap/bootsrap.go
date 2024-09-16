@@ -7,22 +7,23 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go/jetstream"
 	"github.com/redis/go-redis/v9"
 )
 
 type LoaderFn interface {
-	Loader(ctx context.Context, dep *Depedency)
+	Loader(ctx context.Context, dep *Dependency)
 }
 
-type Depedency struct {
+type Dependency struct {
 	MySqlDB           lazy.Loader[*sqlx.DB]
 	Redis             lazy.Loader[*redis.Client]
 	NatsConn          lazy.Loader[*nats.Conn]
-	NatsJetStreamConn lazy.Loader[*nats.JetStreamContext]
+	NatsJetStreamConn lazy.Loader[jetstream.JetStream]
 }
 
-func Load(ctx context.Context, loaders ...LoaderFn) *Depedency {
-	var dep Depedency
+func Load(ctx context.Context, loaders ...LoaderFn) *Dependency {
+	var dep Dependency
 
 	if loaders == nil {
 		return &dep

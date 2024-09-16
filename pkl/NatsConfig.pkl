@@ -1,0 +1,24 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/natsconfig" }
+module NatsConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class Auth {
+  /// Authorization username
+  username: String
+
+  /// Authorization password
+  password: String
+}
+
+/// Whether Nats connections are enabled or not.
+enabled: Boolean
+
+/// The hostname that Nats listens on
+host: String
+
+/// The port that Nats listens on
+port: Int
+
+/// Authorization settings for Nats
+auth: Auth?

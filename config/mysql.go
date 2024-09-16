@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,19 +13,23 @@ import (
 )
 
 type MySQLX struct {
-	dsn DSN
+	appConfig *appconfig.AppConfig
 }
 
-func NewMySQLX(dsn DSN) *MySQLX {
-	return &MySQLX{dsn}
+func NewMySQLX(appConfig *appconfig.AppConfig) *MySQLX {
+	return &MySQLX{appConfig}
 }
 
 func (s *MySQLX) Create(_ context.Context) (db *sqlx.DB, err error) {
 	db, err = sqlx.Open(
 		"mysql",
 		fmt.Sprintf(
-			"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			s.dsn.User, s.dsn.Pass, s.dsn.Host, s.dsn.Port, s.dsn.DB,
+			"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			s.appConfig.Mysql.Auth.Username,
+			s.appConfig.Mysql.Auth.Password,
+			s.appConfig.Mysql.Host,
+			s.appConfig.Mysql.Port,
+			s.appConfig.Mysql.Db,
 		),
 	)
 	if err != nil {
@@ -41,7 +46,7 @@ func (s *MySQLX) Create(_ context.Context) (db *sqlx.DB, err error) {
 	return db, err
 }
 
-func (s *MySQLX) Loader(ctx context.Context, app *bootstrap.Depedency) {
+func (s *MySQLX) Loader(ctx context.Context, app *bootstrap.Dependency) {
 	app.MySqlDB = lazy.New(func() (db *sqlx.DB, err error) {
 		return s.Create(ctx)
 	})

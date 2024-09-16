@@ -1,0 +1,25 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig" }
+module AppConfig
+
+import "MySQLConfig.pkl"
+import "NatsConfig.pkl"
+import "RedisConfig.pkl"
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
+
+// main app configuration
+appName: String
+appDomain: String
+appHost: String
+appHttpPort: Int
+appJwtSecret: String
+appLogPath: String
+
+// mysql configuration
+mysql: MySQLConfig
+
+// redis configuration
+redis: RedisConfig
+
+// nats configuration
+nats: NatsConfig
