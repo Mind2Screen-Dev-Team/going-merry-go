@@ -8,7 +8,7 @@ import (
 
 type HTTPServer struct {
 	address string
-	mux     *http.ServeMux
+	handler http.Handler
 	option  *httpServerOptionValue
 }
 
@@ -19,7 +19,7 @@ type httpServerOptionValue struct {
 	WriteTimeout      time.Duration
 }
 
-func NewHTTPServer(address string, mux *http.ServeMux, opts ...HttpServerOptionFn) (*HTTPServer, error) {
+func NewHTTPServer(address string, handler http.Handler, opts ...HttpServerOptionFn) (*HTTPServer, error) {
 	var option httpServerOptionValue
 
 	for _, opFn := range opts {
@@ -28,13 +28,13 @@ func NewHTTPServer(address string, mux *http.ServeMux, opts ...HttpServerOptionF
 		}
 	}
 
-	return &HTTPServer{address, mux, &option}, nil
+	return &HTTPServer{address, handler, &option}, nil
 }
 
 func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
 	return &http.Server{
 		Addr:              h.address,
-		Handler:           h.mux,
+		Handler:           h.handler,
 		IdleTimeout:       h.option.IdleTimeout,
 		ReadHeaderTimeout: h.option.ReadHeaderTimeout,
 		ReadTimeout:       h.option.ReadTimeout,
