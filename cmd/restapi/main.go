@@ -139,11 +139,11 @@ func LoadApplication(appConfig *appconfig.AppConfig) (dep *bootstrap.AppDependen
 	// # Load All Service
 	service = bootstrap.LoadService(
 		context.Background(),
-		// Link Dependency and Repository
+		// Link Dependency and Service
 		dep,
 		repo,
 
-		// # List Of Repository
+		// # List Of Service
 		service_impl.NewUserServiceImpl(),
 
 		// add more on here...
