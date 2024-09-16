@@ -1,10 +1,10 @@
 package auth_dto
 
-type AuthLoginPayloadDTO struct {
+type AuthLoginPayloadReqDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type AuthLoginDTO struct {
-	Payload AuthLoginPayloadDTO `in:"body=json"`
+type AuthLoginReqDTO struct {
+	Payload AuthLoginPayloadReqDTO `in:"body=json"`
 }
