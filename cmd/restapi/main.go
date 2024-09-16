@@ -38,6 +38,8 @@ func main() {
 		syscall.SIGQUIT,
 	)
 	appDependency, appService := LoadApplication(appConfig)
+
+	// TODO: handler and router loader to load a dep, repo, and serv.
 	_ = appService
 
 	// # Init Go-Chi Router
@@ -48,14 +50,14 @@ func main() {
 
 	// # Load HTTP Server API Configuration
 	httpServerOption := config.NewHttpServerOption()
-	httoServer, err := config.NewHTTPServer(
+	httpServer, err := config.NewHTTPServer(
 
 		// # Required
 		appConfig,
 		appDependency,
 		router,
 
-		// # Options
+		// # Optional
 		httpServerOption.WithIdleTimeout(
 			time.Duration(appConfig.AppHttp.IdleTimeout)*time.Second,
 		),
@@ -73,7 +75,7 @@ func main() {
 		log.Fatalf("Failed to Load Config HTTP Server, got error %+v\n", err)
 	}
 
-	srv, err := httoServer.Create(context.Background())
+	srv, err := httpServer.Create(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Load Initiator HTTP Server, got error %+v\n", err)
 	}
@@ -117,6 +119,8 @@ func LoadApplication(appConfig *appconfig.AppConfig) (dep *bootstrap.AppDependen
 	// # Load All Dependency
 	dep = bootstrap.LoadDependency(
 		context.Background(),
+
+		// # List of Dependency
 		config.NewMySQLX(appConfig),
 		config.NewNatsClient(appConfig),
 
@@ -139,7 +143,8 @@ func LoadApplication(appConfig *appconfig.AppConfig) (dep *bootstrap.AppDependen
 	// # Load All Service
 	service = bootstrap.LoadService(
 		context.Background(),
-		// Link Dependency and Service
+
+		// Link Dependency
 		dep,
 		repo,
 
