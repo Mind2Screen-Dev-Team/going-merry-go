@@ -6,17 +6,6 @@ import (
 	"time"
 )
 
-func NewHttpServer(addr string, mux http.Handler) *http.Server {
-	return &http.Server{
-		Addr:              addr,
-		Handler:           mux,
-		IdleTimeout:       30 * time.Second,
-		ReadHeaderTimeout: 5 * time.Second,
-		ReadTimeout:       15 * time.Second,
-		WriteTimeout:      20 * time.Second,
-	}
-}
-
 type HTTPServer struct {
 	address string
 	mux     *http.ServeMux
