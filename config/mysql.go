@@ -3,8 +3,9 @@ package config
 import (
 	"context"
 	"fmt"
-	"go-skeleton/bootstrap"
-	"go-skeleton/pkg/lazy"
+
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"

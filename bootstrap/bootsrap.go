@@ -2,7 +2,8 @@ package bootstrap
 
 import (
 	"context"
-	"go-skeleton/pkg/lazy"
+
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/nats-io/nats.go"

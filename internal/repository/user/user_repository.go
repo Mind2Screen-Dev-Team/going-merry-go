@@ -2,7 +2,8 @@ package user_repo
 
 import (
 	"context"
-	"go-skeleton/internal/schema"
+
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/schema"
 
 	"github.com/jmoiron/sqlx"
 	"gopkg.in/guregu/null.v4"

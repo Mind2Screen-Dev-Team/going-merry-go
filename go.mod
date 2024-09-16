@@ -1,4 +1,4 @@
-module go-skeleton
+module github.com/Mind2Screen-Dev-Team/go-skeleton
 
 go 1.23.1
 

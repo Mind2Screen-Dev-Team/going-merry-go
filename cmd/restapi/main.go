@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-skeleton/bootstrap"
-	"go-skeleton/config"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
 )
 
 func main() {
