@@ -7,7 +7,7 @@ A Go project starter kit with essential tools and structures.
 - Run All APP via Command Line - (Not Yet)
 - APP Scheduler Cron Job - (Not Yet)
 - APP Worker Pub / Sub - (Not Yet)
-- HTTP Rest API - (On Progress)
+- HTTP Rest API - (Done)
 
 ### Todo
 - DTO Validation
