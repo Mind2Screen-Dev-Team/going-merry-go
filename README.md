@@ -10,7 +10,6 @@ A Go project starter kit with essential tools and structures.
 - HTTP Rest API - (On Progress)
 
 ### Todo
-- HTTP Handler and Router Loader
 - DTO Validation
 - Logging
 - DB migrations and seeders
@@ -30,6 +29,7 @@ A Go project starter kit with essential tools and structures.
 - Base Structural Directory
 - Setup Basic Generator Configuration
 - Registry Dependency, Repository and Service
+- HTTP Handler and Router Loader
 
 ## Tips
 
