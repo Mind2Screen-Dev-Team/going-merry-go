@@ -1,8 +1,6 @@
 package bootstrap
 
 import (
-	"context"
-
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 
 	"github.com/jmoiron/sqlx"
@@ -20,22 +18,4 @@ type AppDependency struct {
 	NatsJetStreamConn lazy.Loader[jetstream.JetStream]
 
 	// register your dependency on here
-}
-
-type LoaderDependencyFn interface {
-	Loader(ctx context.Context, dep *AppDependency)
-}
-
-func LoadDependency(ctx context.Context, loaders ...LoaderDependencyFn) *AppDependency {
-	var dep AppDependency
-
-	if loaders == nil {
-		return &dep
-	}
-
-	for _, l := range loaders {
-		l.Loader(ctx, &dep)
-	}
-
-	return &dep
 }

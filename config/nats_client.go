@@ -7,7 +7,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 )

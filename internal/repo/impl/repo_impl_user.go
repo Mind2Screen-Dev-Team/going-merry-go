@@ -3,7 +3,7 @@ package repo_impl
 import (
 	"context"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/entity"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 

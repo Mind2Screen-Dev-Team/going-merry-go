@@ -10,16 +10,16 @@ A Go project starter kit with essential tools and structures.
 - HTTP Rest API - (On Progress)
 
 ### Todo
-- CMD Generator handler, middleware, router, repo and service
 - HTTP Handler and Router Loader
 - DTO Validation
 - Logging
 - DB migrations and seeders
-- Setup Advance Generator Configuration: yaml -> pkl -> yaml, environment change: dev | prod
 - Makefile Runner
+- Docker Integration
 - Open Telemetry Integration
 - Example Rest API APP
-- Docker Integration
+- CMD Generator handler, middleware, router, repo and service
+- Setup Advance Generator Configuration: yaml -> pkl -> yaml, environment change: dev | prod
 - Unit Test
 - Open API Generator Docs
 - Cron Job Scheduler APP

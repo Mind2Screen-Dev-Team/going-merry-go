@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 

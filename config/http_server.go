@@ -7,14 +7,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 )
 
 type HTTPServer struct {
-	appConfig     *appconfig.AppConfig
-	appDependency *bootstrap.AppDependency
+	cfg  *appconfig.AppConfig
+	dep  *bootstrap.AppDependency
+	repo *bootstrap.AppRepository
+	serv *bootstrap.AppService
 
 	handler http.Handler
 	option  *httpServerOptionValue
@@ -28,8 +30,10 @@ type httpServerOptionValue struct {
 }
 
 func NewHTTPServer(
-	appConfig *appconfig.AppConfig,
-	appDependency *bootstrap.AppDependency,
+	cfg *appconfig.AppConfig,
+	dep *bootstrap.AppDependency,
+	repo *bootstrap.AppRepository,
+	serv *bootstrap.AppService,
 	handler http.Handler,
 	opts ...HttpServerOptionFn,
 ) (*HTTPServer, error) {
@@ -41,19 +45,34 @@ func NewHTTPServer(
 		}
 	}
 
-	return &HTTPServer{appConfig, appDependency, handler, &option}, nil
+	return &HTTPServer{
+		cfg,
+		dep,
+		repo,
+		serv,
+		handler,
+		&option,
+	}, nil
 }
 
 func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
 	return &http.Server{
-		Addr:              fmt.Sprintf("%s:%d", h.appConfig.AppHost, h.appConfig.AppHttp.Port),
+		Addr:              fmt.Sprintf("%s:%d", h.cfg.AppHost, h.cfg.AppHttp.Port),
 		Handler:           h.handler,
 		IdleTimeout:       h.option.IdleTimeout,
 		ReadHeaderTimeout: h.option.ReadHeaderTimeout,
 		ReadTimeout:       h.option.ReadTimeout,
 		WriteTimeout:      h.option.WriteTimeout,
 		BaseContext: func(l net.Listener) context.Context {
-			return context.WithValue(context.Background(), ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG, h.appConfig)
+			ctx := context.Background()
+
+			// # Assign a Value To Context
+			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG, h.cfg)
+			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_DEPENDENCY, h.dep)
+			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_REPOSITORY, h.repo)
+			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_SERVICE, h.serv)
+
+			return ctx
 		},
 	}, nil
 }

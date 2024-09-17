@@ -1,4 +1,4 @@
-package auth_dto
+package dto
 
 type AuthLoginPayloadReqDTO struct {
 	Email    string `json:"email"`
