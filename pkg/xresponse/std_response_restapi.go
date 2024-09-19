@@ -96,7 +96,7 @@ type RestResponseSTD[D any, E any] interface {
 	AddHeader(key string, value string) RestResponseSTD[D, E]
 
 	// Delete HTTP Response Header by Key, this is equal function with:
-	//	responseWriter.Header().Del(key, value)
+	//	responseWriter.Header().Del(key)
 	DelHeader(key string) RestResponseSTD[D, E]
 
 	// A Method that Usefull for Run Interceptor Only,
