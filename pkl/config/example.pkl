@@ -3,7 +3,7 @@ amends "../AppConfig.pkl"
 appName = "Go Skeleton App"
 appDomain = "localhost"
 appHost = "127.0.0.1"
-appJwtSecret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdX"
+appJwtSecret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
 appLogPath = "./storage/logs"
 appHttp {
   port = 8081
