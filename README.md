@@ -35,15 +35,18 @@ A Go project starter kit with essential tools and structures.
 
 ### Golang Build
 
-- Go build restapi
+- Go Build Rest Api App
 
     ```bash
     go build -o ./bin/restapi ./cmd/restapi/main.go
     ```
 
+### DB Migration Tools
+- Goose DB Migrations, Source: https://github.com/pressly/goose
+
 ### Align Struct Tools
 
-- https://www.freedium.cfd/https://medium.com/@sddkal/use-betteralign-to-optimize-go-memory-consumption-3736a3172860
+- Aligo Article, Source: https://www.freedium.cfd/https://medium.com/@sddkal/use-betteralign-to-optimize-go-memory-consumption-3736a3172860
 
 - Install aligo for align size struct
     ```bash
