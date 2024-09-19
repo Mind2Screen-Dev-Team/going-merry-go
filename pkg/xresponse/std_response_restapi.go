@@ -32,7 +32,7 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //	// Controller / Handler
 //	func SomeHandler(rw http.ResponseWriter, r *http.Request) {
 //		ctx := r.Context()
-//		xRes := xresponse.NewRestResponseWithInterceptor(rw, r, interceptor.NewSomeInterceptHandler())
+//		xRes := xresponse.NewRestResponseWithInterceptor(rw, r, interceptor.NewSomeInterceptHandler(), nil)
 //
 //		xReqDto := xhttputil.LoadInput[dto.SomeReqDTO](ctx)
 //		if err := xReqDto.Validate(ctx); err != nil {
@@ -41,22 +41,34 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //
 //		// continue your bussines logic ...
 //	}
-func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E]) RestResponseSTD[D, E] {
-	rCtx := r.Context()
+func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E], ctxHandlerFn ContextHandlerFn) RestResponseSTD[D, E] {
+	requestCtx := r.Context()
 
-	ctx := context.Background()
-	ctx = copyCtxHttpServerValue(ctx, rCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG)
-	ctx = copyCtxHttpServerValue(ctx, rCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_DEPENDENCY)
-	ctx = copyCtxHttpServerValue(ctx, rCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_REPOSITORY)
-	ctx = copyCtxHttpServerValue(ctx, rCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_SERVICE)
+	nextCtx := context.Background()
+	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG)
+	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_DEPENDENCY)
+	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_REPOSITORY)
+	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_SERVICE)
+
+	if ctxHandlerFn != nil {
+		nextCtx = ctxHandlerFn(requestCtx, nextCtx)
+	}
 
 	return &restResponseSTD[D, E]{
 		ResponseSTD: ResponseSTD[D, E]{
 			responseWriter:   rw,
-			request:          r.Clone(ctx),
+			request:          r.Clone(nextCtx),
 			interceptHandler: handler,
 		},
 	}
+}
+
+// For copy a value that already on request ctx
+type ContextHandlerFn func(requestContext context.Context, nextContext context.Context) context.Context
+
+// Create new context handler for copy a value that already on request ctx
+func NewContextHandler(fn func(requestContext context.Context, nextContext context.Context) context.Context) ContextHandlerFn {
+	return ContextHandlerFn(fn)
 }
 
 // A Async Function For Interceptor HTTP REST API
