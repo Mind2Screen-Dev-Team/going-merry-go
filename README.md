@@ -33,7 +33,16 @@ A Go project starter kit with essential tools and structures.
 
 ## Tips
 
+### Golang Build
+
+- Go build restapi
+
+    ```bash
+    go build -o ./bin/restapi ./cmd/restapi/main.go
+    ```
+
 ### Align Struct Tools
+
 - https://www.freedium.cfd/https://medium.com/@sddkal/use-betteralign-to-optimize-go-memory-consumption-3736a3172860
 
 - Install aligo for align size struct
@@ -42,6 +51,7 @@ A Go project starter kit with essential tools and structures.
     ```
 
 ### PKL Config Generator Tools
+
 - https://pkl-lang.org/go/current/quickstart.html
 - Edit `.zshrc`, Add Golang Bin into PATH `export PATH=$PATH:"$HOME/go/bin"` for Mac OS and when using brew to install `go`.
 

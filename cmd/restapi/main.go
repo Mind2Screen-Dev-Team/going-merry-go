@@ -15,7 +15,13 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/middleware"
+
+	httpin_integration "github.com/ggicci/httpin/integration"
 )
+
+func init() {
+	httpin_integration.UseGochiURLParam("path", chi.URLParam)
+}
 
 func main() {
 	// # Load App Config
@@ -76,7 +82,8 @@ func main() {
 		//
 		router,
 
-		// # Optional
+		// # Options
+		//
 		httpServerOption.WithIdleTimeout(
 			time.Duration(cfg.AppHttp.IdleTimeout)*time.Second,
 		),

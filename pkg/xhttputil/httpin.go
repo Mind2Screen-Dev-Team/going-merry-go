@@ -1,7 +1,9 @@
 package xhttputil
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"net/http"
 
 	"github.com/ggicci/httpin"
@@ -63,7 +65,7 @@ func (inputOptions) WithNestedDirectivesEnabled(enabled bool) InputOptionFn {
 	}
 }
 
-// Middleware to parse request input: path variables, headers, query params, body (json, xml,...) and forms. for example:
+// Middleware to parse request input: path variables, headers, query params, body (json and xml) and forms. for example:
 //
 //	router.Use(httputil.WithInput[dto.AuthLoginReqDTO]())
 func WithInput[T any](opts ...InputOptionFn) func(http.Handler) http.Handler {
@@ -85,4 +87,24 @@ func WithInput[T any](opts ...InputOptionFn) func(http.Handler) http.Handler {
 
 	var in T
 	return httpin.NewInput(&in, copts...)
+}
+
+func DeepCopyRequest(r *http.Request) *http.Request {
+	// Read the body if it's non-nil
+	var bodyBytes []byte
+	if r.Body != nil {
+		bodyBytes, _ = io.ReadAll(r.Body)
+		// Refill the original request body to preserve it for further usage.
+		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+	}
+
+	// Create a shallow copy of the request
+	rCopy := r.Clone(r.Context())
+
+	// Replace the body of the new request with a new reader wrapping the copied bytes
+	if bodyBytes != nil {
+		rCopy.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+	}
+
+	return rCopy
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
+	"github.com/ggicci/httpin"
 )
 
 // A Wrapper HTTP Rest API Response Builder Initiator
@@ -32,7 +33,7 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //	// Controller / Handler
 //	func SomeHandler(rw http.ResponseWriter, r *http.Request) {
 //		ctx := r.Context()
-//		xRes := xresponse.NewRestResponseWithInterceptor(rw, r, interceptor.NewSomeInterceptHandler(), nil)
+//		xRes := xresponse.NewRestResponseWithInterceptor(rw, r, interceptor.NewSomeInterceptHandler())
 //
 //		xReqDto := xhttputil.LoadInput[dto.SomeReqDTO](ctx)
 //		if err := xReqDto.Validate(ctx); err != nil {
@@ -41,34 +42,27 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //
 //		// continue your bussines logic ...
 //	}
-func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E], ctxHandlerFn ContextHandlerFn) RestResponseSTD[D, E] {
+func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E], ctxKeys ...ctxkey.CtxKey) RestResponseSTD[D, E] {
 	requestCtx := r.Context()
 
 	nextCtx := context.Background()
-	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG)
-	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_DEPENDENCY)
-	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_REPOSITORY)
-	nextCtx = copyCtxHttpServerValue(nextCtx, requestCtx, ctxkey.CTX_KEY_HTTP_SERVER_APP_SERVICE)
+	nextCtx = context.WithValue(nextCtx, httpin.Input, requestCtx.Value(httpin.Input))
+	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_CONFIG)
+	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_DEPENDENCY)
+	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_REPOSITORY)
+	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_SERVICE)
 
-	if ctxHandlerFn != nil {
-		nextCtx = ctxHandlerFn(requestCtx, nextCtx)
+	for _, ctxKey := range ctxKeys {
+		nextCtx = copyCtxValue(nextCtx, requestCtx, ctxKey)
 	}
 
 	return &restResponseSTD[D, E]{
 		ResponseSTD: ResponseSTD[D, E]{
 			responseWriter:   rw,
-			request:          r.Clone(nextCtx),
+			request:          r,
 			interceptHandler: handler,
 		},
 	}
-}
-
-// For copy a value that already on request ctx
-type ContextHandlerFn func(requestContext context.Context, nextContext context.Context) context.Context
-
-// Create new context handler for copy a value that already on request ctx
-func NewContextHandler(fn func(requestContext context.Context, nextContext context.Context) context.Context) ContextHandlerFn {
-	return ContextHandlerFn(fn)
 }
 
 // A Async Function For Interceptor HTTP REST API
@@ -86,6 +80,7 @@ type RestResponseValue[D any, E any] interface {
 	GetError() E
 	GetStatusCode() int
 	GetResponseHeader() http.Header
+	JSONText() (string, error)
 }
 
 // A Wrapper Standard Response For HTTP REST API
@@ -214,8 +209,11 @@ func (r *restResponseSTD[D, E]) Done() {
 
 	defer func() {
 		if r.interceptHandler != nil {
-			// async function
-			go r.interceptHandler.Handler(r.request, r)
+			// is only allow call once
+			r.onceFn.Do(func() {
+				// async function
+				go r.interceptHandler.Handler(r.request, r)
+			})
 		}
 	}()
 }
@@ -227,8 +225,11 @@ func (r *restResponseSTD[D, E]) JSON() {
 
 	defer func() {
 		if r.interceptHandler != nil {
-			// async function
-			go r.interceptHandler.Handler(r.request, r)
+			// is only allow call once
+			r.onceFn.Do(func() {
+				// async function
+				go r.interceptHandler.Handler(r.request, r)
+			})
 		}
 	}()
 
@@ -242,8 +243,11 @@ func (r *restResponseSTD[D, E]) JSONOrErr() error {
 
 	defer func() {
 		if r.interceptHandler != nil {
-			// async function
-			go r.interceptHandler.Handler(r.request, r)
+			// is only allow call once
+			r.onceFn.Do(func() {
+				// async function
+				go r.interceptHandler.Handler(r.request, r)
+			})
 		}
 	}()
 

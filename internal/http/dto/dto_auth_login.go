@@ -6,5 +6,5 @@ type AuthLoginPayloadReqDTO struct {
 }
 
 type AuthLoginReqDTO struct {
-	Payload AuthLoginPayloadReqDTO `in:"body=json"`
+	Payload AuthLoginPayloadReqDTO `in:"body=json" json:"payload"`
 }

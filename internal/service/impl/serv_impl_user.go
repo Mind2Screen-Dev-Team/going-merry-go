@@ -3,7 +3,7 @@ package service_impl
 import (
 	"context"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/entity"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 	"github.com/redis/go-redis/v9"
@@ -22,7 +22,7 @@ func NewUserServiceImpl() *userServiceImpl {
 	return &userServiceImpl{}
 }
 
-func (r *userServiceImpl) Loader(ctx context.Context, appDependency *bootstrap.AppDependency, appRepository *bootstrap.AppRepository, appService *bootstrap.AppService) {
+func (r *userServiceImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appRepository *registry.AppRepository, appService *registry.AppService) {
 	r.redis = &appDependency.Redis
 	r.user = appRepository.User
 	appService.User = r

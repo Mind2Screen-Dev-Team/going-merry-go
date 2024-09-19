@@ -1,4 +1,4 @@
-package bootstrap
+package registry
 
 import (
 	repo_api "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/api"
@@ -7,6 +7,6 @@ import (
 // # REPOSITORY
 
 type AppRepository struct {
-	User repo_api.UserRepoAPI
 	// register your repository on here
+	User repo_api.UserRepoAPI
 }

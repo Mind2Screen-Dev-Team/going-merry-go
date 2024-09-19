@@ -1,11 +1,11 @@
 package app
 
 import (
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 )
 
-func LoadRegistry(cfg *appconfig.AppConfig) (dep *bootstrap.AppDependency, repo *bootstrap.AppRepository, service *bootstrap.AppService) {
+func LoadRegistry(cfg *appconfig.AppConfig) (dep *registry.AppDependency, repo *registry.AppRepository, service *registry.AppService) {
 
 	// # Load All Dependency
 	dep = AppDependencyLoader(cfg)

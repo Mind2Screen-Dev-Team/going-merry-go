@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 )
 
-func AppDependencyLoader(cfg *appconfig.AppConfig) *bootstrap.AppDependency {
+func AppDependencyLoader(cfg *appconfig.AppConfig) *registry.AppDependency {
 	// # Load All Dependency
 	return bootstrap.LoadDependency(
 		context.Background(),

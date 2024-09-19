@@ -8,7 +8,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 )
@@ -44,7 +44,7 @@ func (n *NatsClient) Create(_ context.Context) (*nats.Conn, error) {
 	)
 }
 
-func (n *NatsClient) Loader(ctx context.Context, app *bootstrap.AppDependency) {
+func (n *NatsClient) Loader(ctx context.Context, app *registry.AppDependency) {
 	app.NatsConn = lazy.New(func() (*nats.Conn, error) {
 		return n.Create(ctx)
 	})

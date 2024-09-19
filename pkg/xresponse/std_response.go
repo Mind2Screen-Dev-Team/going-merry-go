@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"sync"
 )
 
 // A Standard Response For API
@@ -14,6 +15,7 @@ type ResponseSTD[D any, E any] struct {
 	responseHeader http.Header         `json:"-"`
 	responseWriter http.ResponseWriter `json:"-"`
 
+	onceFn           sync.Once
 	interceptHandler InterceptHandler[D, E] `json:"-"`
 
 	Code string `json:"code"`

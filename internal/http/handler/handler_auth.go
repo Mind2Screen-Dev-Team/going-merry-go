@@ -1,29 +1,30 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/dto"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/interceptor"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttputil"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
 )
 
-type HandlerAuth struct{}
+type HandlerAuth struct {
+	interceptor.ExampleInterceptor
+}
 
-func (HandlerAuth) Login(rw http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	input := xhttputil.LoadInput[dto.AuthLoginReqDTO](ctx)
+func (h HandlerAuth) Login(rw http.ResponseWriter, r *http.Request) {
+	data := xhttputil.LoadInput[dto.AuthLoginReqDTO](r.Context())
 
-	cfg, ok := ctx.Value(ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG).(*appconfig.AppConfig)
+	// # Example Basic Response Builder
+	resp := xresponse.NewRestResponse[map[string]any, any](rw)
 
-	rw.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(rw).Encode(map[string]any{
-		"status":  true,
-		"message": "success",
-		"data":    input,
-		"ok":      ok,
-		"cfg":     cfg,
-	})
+	// # Example Response Builder With Interceptor:
+	// resp := xresponse.NewRestResponseWithInterceptor(
+	// 	rw,
+	// 	r,
+	// 	h.ExampleInterceptor,
+	// )
+
+	resp.Code("SUCCESS").Msg("auth login success").Data(map[string]any{"input": data}).JSON()
 }

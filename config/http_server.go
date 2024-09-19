@@ -7,16 +7,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 )
 
 type HTTPServer struct {
 	cfg  *appconfig.AppConfig
-	dep  *bootstrap.AppDependency
-	repo *bootstrap.AppRepository
-	serv *bootstrap.AppService
+	dep  *registry.AppDependency
+	repo *registry.AppRepository
+	serv *registry.AppService
 
 	handler http.Handler
 	option  *httpServerOptionValue
@@ -31,9 +31,9 @@ type httpServerOptionValue struct {
 
 func NewHTTPServer(
 	cfg *appconfig.AppConfig,
-	dep *bootstrap.AppDependency,
-	repo *bootstrap.AppRepository,
-	serv *bootstrap.AppService,
+	dep *registry.AppDependency,
+	repo *registry.AppRepository,
+	serv *registry.AppService,
 	handler http.Handler,
 	opts ...HttpServerOptionFn,
 ) (*HTTPServer, error) {
@@ -67,10 +67,10 @@ func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
 			ctx := context.Background()
 
 			// # Assign a Value To Context
-			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_CONFIG, h.cfg)
-			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_DEPENDENCY, h.dep)
-			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_REPOSITORY, h.repo)
-			ctx = context.WithValue(ctx, ctxkey.CTX_KEY_HTTP_SERVER_APP_SERVICE, h.serv)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_CONFIG, h.cfg)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_DEPENDENCY, h.dep)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_REPOSITORY, h.repo)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_SERVICE, h.serv)
 
 			return ctx
 		},

@@ -3,7 +3,7 @@ package repo_impl
 import (
 	"context"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/entity"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 
@@ -20,7 +20,7 @@ func NewUserRepoImpl() *userRepoImpl {
 	return &userRepoImpl{}
 }
 
-func (r *userRepoImpl) Loader(ctx context.Context, appDependency *bootstrap.AppDependency, appRepository *bootstrap.AppRepository) {
+func (r *userRepoImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appRepository *registry.AppRepository) {
 	r.db = &appDependency.MySqlDB
 	appRepository.User = r
 }

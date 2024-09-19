@@ -1,4 +1,4 @@
-package bootstrap
+package registry
 
 import (
 	service_api "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/service/api"
@@ -7,6 +7,6 @@ import (
 // # SERVICE
 
 type AppService struct {
-	User service_api.UserServiceAPI
 	// register your service on here
+	User service_api.UserServiceAPI
 }

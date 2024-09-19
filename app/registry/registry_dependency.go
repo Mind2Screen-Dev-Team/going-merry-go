@@ -1,4 +1,4 @@
-package bootstrap
+package registry
 
 import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
@@ -12,10 +12,9 @@ import (
 // # DEPENDENCY
 
 type AppDependency struct {
+	// register your dependency on here
 	MySqlDB           lazy.Loader[*sqlx.DB]
 	Redis             lazy.Loader[*redis.Client]
 	NatsConn          lazy.Loader[*nats.Conn]
 	NatsJetStreamConn lazy.Loader[jetstream.JetStream]
-
-	// register your dependency on here
 }
