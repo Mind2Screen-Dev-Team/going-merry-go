@@ -8,29 +8,48 @@ import "RedisConfig.pkl"
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
 
 class AppHttp {
-    port: Int
-    idleTimeout: Int
-    readHeaderTimeout: Int
-    readTimeout: Int
-    writeTimeout: Int
-    handlerTimeout: Int
+    /// App HTTP Port
+    port: Int = 8081
+
+    /// App HTTP Idle Timeout
+    idleTimeout: Int = 30
+
+    /// App HTTP Read Header Timeout
+    readHeaderTimeout: Int = 5
+
+    /// App HTTP Read Timeout
+    readTimeout: Int = 15
+
+    /// App HTTP Write Timeout
+    writeTimeout: Int = 20
+
+    /// App HTTP Handler Timeout
+    handlerTimeout: Int = 60
 }
 
-// main app configuration
-appName: String
-appDomain: String
-appHost: String
-appJwtSecret: String
-appLogPath: String
+/// App Name
+appName: String(!isEmpty) = "Go Skeleton App"
 
-// app http configuration
+/// App Domain
+appDomain: String(!isEmpty) = "localhost"
+
+/// App Host
+appHost: String(!isEmpty) = "127.0.0.1"
+
+/// App JWT Secret
+appJwtSecret: String(length == 32) = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
+
+/// App Log Path
+appLogPath: String(!isEmpty) = "./storage/logs"
+
+/// App Http Configuration
 appHttp: AppHttp
 
-// mysql configuration
+/// MySql Configuration
 mysql: MySQLConfig
 
-// redis configuration
+/// Redis Configuration
 redis: RedisConfig
 
-// nats configuration
+/// Nats Configuration
 nats: NatsConfig

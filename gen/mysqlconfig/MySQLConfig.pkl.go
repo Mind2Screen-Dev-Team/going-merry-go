@@ -8,7 +8,7 @@ import (
 )
 
 type MySQLConfig struct {
-	// Whether MySQL connections are enabled or not.
+	// MySql Feature is enabled
 	Enabled bool `pkl:"enabled"`
 
 	// The hostname that MySQL listens on

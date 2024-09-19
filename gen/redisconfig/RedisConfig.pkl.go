@@ -8,7 +8,7 @@ import (
 )
 
 type RedisConfig struct {
-	// Whether Redis connections are enabled or not.
+	// Redis Feature is enabled
 	Enabled bool `pkl:"enabled"`
 
 	// The hostname that Redis listens on
@@ -16,6 +16,9 @@ type RedisConfig struct {
 
 	// The port that Redis listens on
 	Port int `pkl:"port"`
+
+	// The Redis DB selection
+	Db int `pkl:"db"`
 
 	// Authorization settings for Redis
 	Auth *Auth `pkl:"auth"`

@@ -11,7 +11,7 @@ func LoadRouter(route chi.Router) {
 	bootstrap.LoadRouter(
 		route,
 
-		// # List Of Service
+		// # List Of Router
 		router.NewRouterAuth(),
 	)
 }

@@ -9,7 +9,7 @@ import (
 	repo_impl "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/impl"
 )
 
-func AppRepositoryLoader(appConfig *appconfig.AppConfig, dep *bootstrap.AppDependency) *bootstrap.AppRepository {
+func AppRepositoryLoader(cfg *appconfig.AppConfig, dep *bootstrap.AppDependency) *bootstrap.AppRepository {
 	// # Load All Repository
 	return bootstrap.LoadRepository(
 		context.Background(),

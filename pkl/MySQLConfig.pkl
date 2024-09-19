@@ -4,24 +4,27 @@ module MySQLConfig
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
 class Auth {
-  /// Authorization username
-  username: String
+  /// MySql authorization is enabled
+  enabled: Boolean = true
 
-  /// Authorization password
-  password: String
+  /// MySql authorization username
+  username: String(!isEmpty) = "mysql"
+
+  /// MySql authorization password
+  password: String(!isEmpty) = "secret"
 }
 
-/// Whether MySQL connections are enabled or not.
-enabled: Boolean
+/// MySql Feature is enabled
+enabled: Boolean = true
 
 /// The hostname that MySQL listens on
-host: String
+host: String(!isEmpty) = "localhost"
 
 /// The port that MySQL listens on
-port: Int
+port: Int = 3306
 
 /// The port that MySQL listens on
-db: String
+db: String(!isEmpty) = "skeleton-db"
 
 /// Authorization settings for MySQL
-auth: Auth?
+auth: Auth

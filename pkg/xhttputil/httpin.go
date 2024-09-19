@@ -1,4 +1,4 @@
-package httputil
+package xhttputil
 
 import (
 	"context"

@@ -2,9 +2,12 @@
 package redisconfig
 
 type Auth struct {
-	// Aauthorization username
+	// Authorization Enabled
+	Enabled bool `pkl:"enabled"`
+
+	// Authorization username
 	Username string `pkl:"username"`
 
-	// Aauthorization password
+	// Authorization password
 	Password string `pkl:"password"`
 }

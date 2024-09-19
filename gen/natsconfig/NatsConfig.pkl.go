@@ -8,7 +8,7 @@ import (
 )
 
 type NatsConfig struct {
-	// Whether Nats connections are enabled or not.
+	// Nats Feature is enabled
 	Enabled bool `pkl:"enabled"`
 
 	// The hostname that Nats listens on

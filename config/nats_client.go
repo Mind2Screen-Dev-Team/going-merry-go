@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/nats-io/nats.go"
@@ -13,27 +14,31 @@ import (
 )
 
 type NatsClient struct {
-	appConfig *appconfig.AppConfig
+	cfg *appconfig.AppConfig
 }
 
-func NewNatsClient(appConfig *appconfig.AppConfig) *NatsClient {
-	return &NatsClient{appConfig}
+func NewNatsClient(cfg *appconfig.AppConfig) *NatsClient {
+	return &NatsClient{cfg}
 }
 
 func (n *NatsClient) Create(_ context.Context) (*nats.Conn, error) {
+	if !n.cfg.Nats.Enabled {
+		return nil, errors.New("nats client message broker is disabled")
+	}
+
 	var options []nats.Option
-	if n.appConfig.Nats.Enabled {
+	if n.cfg.Nats.Auth.Enabled {
 		options = append(options, nats.UserInfo(
-			n.appConfig.Nats.Auth.Username,
-			n.appConfig.Nats.Auth.Password,
+			n.cfg.Nats.Auth.Username,
+			n.cfg.Nats.Auth.Password,
 		))
 	}
 
 	return nats.Connect(
 		fmt.Sprintf(
 			"nats://%s:%d",
-			n.appConfig.Nats.Host,
-			n.appConfig.Nats.Port,
+			n.cfg.Nats.Host,
+			n.cfg.Nats.Port,
 		),
 		options...,
 	)

@@ -19,7 +19,7 @@ import (
 
 func main() {
 	// # Load App Config
-	cfg, err := appconfig.LoadFromPath(context.Background(), "pkl/config/env.pkl")
+	cfg, err := appconfig.LoadFromPath(context.Background(), "pkl/config/example.pkl")
 	if err != nil {
 		panic(err)
 	}

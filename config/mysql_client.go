@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
@@ -13,23 +14,27 @@ import (
 )
 
 type MySQLX struct {
-	appConfig *appconfig.AppConfig
+	cfg *appconfig.AppConfig
 }
 
-func NewMySQLX(appConfig *appconfig.AppConfig) *MySQLX {
-	return &MySQLX{appConfig}
+func NewMySQLX(cfg *appconfig.AppConfig) *MySQLX {
+	return &MySQLX{cfg}
 }
 
 func (s *MySQLX) Create(_ context.Context) (db *sqlx.DB, err error) {
+	if !s.cfg.Mysql.Enabled {
+		return nil, errors.New("mysql client database is disabled")
+	}
+
 	db, err = sqlx.Open(
 		"mysql",
 		fmt.Sprintf(
 			"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			s.appConfig.Mysql.Auth.Username,
-			s.appConfig.Mysql.Auth.Password,
-			s.appConfig.Mysql.Host,
-			s.appConfig.Mysql.Port,
-			s.appConfig.Mysql.Db,
+			s.cfg.Mysql.Auth.Username,
+			s.cfg.Mysql.Auth.Password,
+			s.cfg.Mysql.Host,
+			s.cfg.Mysql.Port,
+			s.cfg.Mysql.Db,
 		),
 	)
 	if err != nil {

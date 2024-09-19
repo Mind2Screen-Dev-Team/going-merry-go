@@ -1,0 +1,47 @@
+amends "../AppConfig.pkl"
+
+appName = "Go Skeleton App"
+appDomain = "localhost"
+appHost = "127.0.0.1"
+appJwtSecret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdX"
+appLogPath = "./storage/logs"
+appHttp {
+  port = 8081
+  idleTimeout = 30
+  readHeaderTimeout = 5
+  readTimeout = 15
+  writeTimeout = 20
+  handlerTimeout = 60
+}
+mysql {
+  enabled = true
+  host = "localhost"
+  port = 3306
+  db = "skeleton-db"
+  auth {
+    enabled = true
+    username = "mysql"
+    password = "secret"
+  }
+}
+redis {
+  enabled = true
+  host = "localhost"
+  port = 6379
+  db = 0
+  auth {
+    enabled = true
+    username = "mysql"
+    password = "secret"
+  }
+}
+nats {
+  enabled = true
+  host = "localhost"
+  port = 4222
+  auth {
+    enabled = true
+    username = "mysql"
+    password = "secret"
+  }
+}

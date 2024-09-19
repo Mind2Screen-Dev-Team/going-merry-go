@@ -24,5 +24,16 @@ go.work.sum
 # env file
 .env
 
+# Mac OS
 .DS_Store
+
+# VS Code
 .vscode
+
+# Go Binary
+bin
+!bin/README.md
+
+# Storage Logs
+storage/logs
+!storage/logs/README.md

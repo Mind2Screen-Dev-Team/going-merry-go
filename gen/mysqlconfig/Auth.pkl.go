@@ -2,9 +2,12 @@
 package mysqlconfig
 
 type Auth struct {
-	// Authorization username
+	// MySql authorization is enabled
+	Enabled bool `pkl:"enabled"`
+
+	// MySql authorization username
 	Username string `pkl:"username"`
 
-	// Authorization password
+	// MySql authorization password
 	Password string `pkl:"password"`
 }

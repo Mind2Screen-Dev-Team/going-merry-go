@@ -2,9 +2,12 @@
 package natsconfig
 
 type Auth struct {
-	// Authorization username
+	// Nats authorization is nabled
+	Enabled bool `pkl:"enabled"`
+
+	// Nats authorization username
 	Username string `pkl:"username"`
 
-	// Authorization password
+	// Nats authorization password
 	Password string `pkl:"password"`
 }

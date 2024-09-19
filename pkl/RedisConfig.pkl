@@ -4,21 +4,27 @@ module RedisConfig
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
 class Auth {
-  /// Aauthorization username
-  username: String
+  /// Authorization Enabled
+  enabled: Boolean = true
 
-  /// Aauthorization password
-  password: String
+  /// Authorization username
+  username: String = "mysql"
+
+  /// Authorization password
+  password: String = "secret"
 }
 
-/// Whether Redis connections are enabled or not.
-enabled: Boolean
+/// Redis Feature is enabled
+enabled: Boolean = true
 
 /// The hostname that Redis listens on
-host: String
+host: String(!isEmpty) = "localhost"
 
 /// The port that Redis listens on
-port: Int
+port: Int = 6379
+
+/// The Redis DB selection
+db: Int = 0
 
 /// Authorization settings for Redis
-auth: Auth?
+auth: Auth

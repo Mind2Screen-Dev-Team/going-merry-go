@@ -4,21 +4,24 @@ module NatsConfig
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
 class Auth {
-  /// Authorization username
-  username: String
+  /// Nats authorization is nabled
+  enabled: Boolean = true
 
-  /// Authorization password
-  password: String
+  /// Nats authorization username
+  username: String(!isEmpty) = "mysql"
+
+  /// Nats authorization password
+  password: String(!isEmpty) = "secret"
 }
 
-/// Whether Nats connections are enabled or not.
-enabled: Boolean
+/// Nats Feature is enabled
+enabled: Boolean = true
 
 /// The hostname that Nats listens on
-host: String
+host: String(!isEmpty) = "localhost"
 
 /// The port that Nats listens on
-port: Int
+port: Int = 4222
 
 /// Authorization settings for Nats
-auth: Auth?
+auth: Auth

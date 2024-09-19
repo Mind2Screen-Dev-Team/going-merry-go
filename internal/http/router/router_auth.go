@@ -4,7 +4,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/dto"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/handler"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/httputil"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttputil"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -24,5 +24,5 @@ func (r *routerAuthImpl) Loader(router chi.Router) bootstrap.LoaderRouter {
 }
 
 func (r *routerAuthImpl) Route() {
-	r.router.With(httputil.WithInput[dto.AuthLoginReqDTO]()).Post("/api/v1/auth/login", r.handler.Login)
+	r.router.With(xhttputil.WithInput[dto.AuthLoginReqDTO]()).Post("/api/v1/auth/login", r.handler.Login)
 }
