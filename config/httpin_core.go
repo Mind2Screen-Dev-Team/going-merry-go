@@ -13,6 +13,8 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
 
 	"github.com/ggicci/httpin/core"
+	"github.com/ggicci/httpin/integration"
+	"github.com/go-chi/chi/v5"
 )
 
 type httpinCore struct{}
@@ -22,6 +24,9 @@ func NewHttpinCore() *httpinCore {
 }
 
 func (httpinCore) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
+	// # Go-Chi URL Param integrations
+	integration.UseGochiURLParam("path", chi.URLParam)
+
 	// # Register Error Handler
 	core.RegisterErrorHandler(func(rw http.ResponseWriter, r *http.Request, err error) {
 		// status: 422
