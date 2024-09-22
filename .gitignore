@@ -37,3 +37,6 @@ bin
 # Storage Logs
 storage/logs
 !storage/logs/README.md
+
+# environment
+.env
