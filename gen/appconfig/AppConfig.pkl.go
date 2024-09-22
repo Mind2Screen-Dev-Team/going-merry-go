@@ -11,23 +11,8 @@ import (
 )
 
 type AppConfig struct {
-	// App Name
-	AppName string `pkl:"appName"`
-
-	// App Domain
-	AppDomain string `pkl:"appDomain"`
-
-	// App Host
-	AppHost string `pkl:"appHost"`
-
-	// App JWT Secret
-	AppJwtSecret string `pkl:"appJwtSecret"`
-
-	// App Log Path
-	AppLogPath string `pkl:"appLogPath"`
-
-	// App Http Configuration
-	AppHttp *AppHttp `pkl:"appHttp"`
+	// App Configuration
+	App *App `pkl:"app"`
 
 	// MySql Configuration
 	Mysql *mysqlconfig.MySQLConfig `pkl:"mysql"`

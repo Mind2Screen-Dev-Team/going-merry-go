@@ -13,5 +13,7 @@ func LoadRouter(route chi.Router) {
 
 		// # List Of Router
 		router.NewRouterAuth(),
+
+		// add more on here...
 	)
 }

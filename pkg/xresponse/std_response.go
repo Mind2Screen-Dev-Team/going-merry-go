@@ -15,10 +15,10 @@ type ResponseSTD[D any, E any] struct {
 	responseHeader http.Header         `json:"-"`
 	responseWriter http.ResponseWriter `json:"-"`
 
-	onceFn           sync.Once
+	interceptOnceFn  sync.Once              `json:"-"`
 	interceptHandler InterceptHandler[D, E] `json:"-"`
 
-	Code string `json:"code"`
+	Code any    `json:"code"`
 	Msg  string `json:"msg"`
 	Data D      `json:"data"`
 	Err  E      `json:"err"`
@@ -29,7 +29,7 @@ func (r *ResponseSTD[D, E]) SetMsg(msg string) *ResponseSTD[D, E] {
 	return r
 }
 
-func (r *ResponseSTD[D, E]) SetCode(code string) *ResponseSTD[D, E] {
+func (r *ResponseSTD[D, E]) SetCode(code any) *ResponseSTD[D, E] {
 	r.Code = code
 	return r
 }

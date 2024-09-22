@@ -25,7 +25,7 @@ func init() {
 
 func main() {
 	// # Load App Config
-	cfg, err := appconfig.LoadFromPath(context.Background(), "pkl/config/example.pkl")
+	cfg, err := appconfig.LoadFromPath(context.Background(), "pkl/config/env.pkl")
 	if err != nil {
 		panic(err)
 	}
@@ -42,13 +42,13 @@ func main() {
 	)
 
 	// # Load Application Registry
-	dep, repo, serv := app.LoadRegistry(cfg)
+	dep, repo, serv := app.LoadRegistry(context.Background(), cfg)
 
 	// # Init Go-Chi Router
 	router := chi.NewRouter()
 
 	// # Assign Default Global Middleware
-	middleware.DefaultGlobal(cfg, router)
+	middleware.DefaultGlobal(cfg, dep, router)
 
 	// # Assign Global Middleware
 	middleware.Global(cfg, dep, repo, serv, router)
@@ -85,38 +85,38 @@ func main() {
 		// # Options
 		//
 		httpServerOption.WithIdleTimeout(
-			time.Duration(cfg.AppHttp.IdleTimeout)*time.Second,
+			time.Duration(cfg.App.Http.IdleTimeout)*time.Second,
 		),
 		httpServerOption.WithReadHeaderTimeout(
-			time.Duration(cfg.AppHttp.ReadHeaderTimeout)*time.Second,
+			time.Duration(cfg.App.Http.ReadHeaderTimeout)*time.Second,
 		),
 		httpServerOption.WithReadTimeout(
-			time.Duration(cfg.AppHttp.ReadTimeout)*time.Second,
+			time.Duration(cfg.App.Http.ReadTimeout)*time.Second,
 		),
 		httpServerOption.WithWriteTimeout(
-			time.Duration(cfg.AppHttp.WriteTimeout)*time.Second,
+			time.Duration(cfg.App.Http.WriteTimeout)*time.Second,
 		),
 	)
 	if err != nil {
-		log.Fatalf("Failed to Load Config HTTP Server, got error %+v\n", err)
+		dep.Logger.Fatal().Msgf("Failed to Load Config HTTP Server, got err: %+v", err)
 	}
 
 	srv, err := httpServer.Create(context.Background())
 	if err != nil {
-		log.Fatalf("Failed to Load Initiator HTTP Server, got error %+v\n", err)
+		dep.Logger.Fatal().Msgf("Failed to Load Initiator HTTP Server, got err: %+v", err)
 	}
 
 	go func() {
-		log.Printf("Start Service HTTP API on address http://%s:%d\n", cfg.AppHost, cfg.AppHttp.Port)
+		dep.Logger.Info().Msgf("Start Service HTTP API on address http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Start Service HTTP API on address http://%s:%d, listen and serve : %+v\n", cfg.AppHost, cfg.AppHttp.Port, err)
+			dep.Logger.Fatal().Msgf("Start Service HTTP API on address http://%s:%d, listen and serve got err: %+v", cfg.App.Host, cfg.App.Http.Port, err)
 		}
-		log.Printf("Stop Service HTTP API on address http://%s:%d\n", cfg.AppHost, cfg.AppHttp.Port)
+		dep.Logger.Info().Msgf("Stop Service HTTP API on address http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
 	}()
 
 	<-stopCh
 
-	log.Printf("Perform shutdown with a maximum timeout of 30 seconds, Service HTTP API on address http://%s:%d\n", cfg.AppHost, cfg.AppHttp.Port)
+	log.Printf("Perform shutdown with a maximum timeout of 30 seconds, Service HTTP API on address http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
 	releaseCtx, releaseFn := context.WithTimeout(context.Background(), 30*time.Second)
 
 	defer func() {
@@ -131,10 +131,10 @@ func main() {
 			dep.NatsConn.Value().Close()
 		}
 
-		log.Printf("Successfully Stop Service HTTP API on address http://%s:%d is exited properly\n", cfg.AppHost, cfg.AppHttp.Port)
+		dep.Logger.Info().Msgf("Successfully Stop Service HTTP API on address http://%s:%d is exited properly", cfg.App.Host, cfg.App.Http.Port)
 	}()
 
 	if err := srv.Shutdown(releaseCtx); err != nil {
-		log.Printf("Shutdown Service HTTP API on address http://%s:%d, err : %+v\n", cfg.AppHost, cfg.AppHttp.Port, err)
+		dep.Logger.Info().Msgf("Shutdown Service HTTP API on address http://%s:%d, got err: %+v", cfg.App.Host, cfg.App.Http.Port, err)
 	}
 }

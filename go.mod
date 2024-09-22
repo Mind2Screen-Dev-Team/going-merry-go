@@ -4,8 +4,10 @@ go 1.23.1
 
 require (
 	github.com/apple/pkl-go v0.8.0
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/ggicci/httpin v0.19.0
 	github.com/go-chi/chi/v5 v5.1.0
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/nats-io/nats.go v1.37.0
@@ -13,6 +15,7 @@ require (
 )
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/ggicci/owl v0.8.2 // indirect
@@ -35,5 +38,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/rs/zerolog v1.33.0
 	gopkg.in/guregu/null.v4 v4.0.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )

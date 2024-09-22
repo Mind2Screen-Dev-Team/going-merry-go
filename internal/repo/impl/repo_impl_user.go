@@ -40,3 +40,19 @@ func (r *userRepoImpl) Find(ctx context.Context, p repo_attribute.UserFindAttrib
 
 	return &u, nil
 }
+
+func (r *userRepoImpl) Count(ctx context.Context, p repo_attribute.UserFindAttribute) (int64, error) {
+	var n int64
+	err := r.db.Value().GetContext(
+		ctx,
+		&n,
+		"SELECT COUNT(id) FROM users WHERE (? IS NULL OR id = ?) AND (? IS NULL OR email = ?)",
+		p.ID,
+		p.Email,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	return n, nil
+}

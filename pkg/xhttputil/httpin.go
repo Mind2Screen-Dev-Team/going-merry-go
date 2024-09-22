@@ -1,9 +1,7 @@
 package xhttputil
 
 import (
-	"bytes"
 	"context"
-	"io"
 	"net/http"
 
 	"github.com/ggicci/httpin"
@@ -28,7 +26,17 @@ func LoadInput[T any](ctx context.Context) *T {
 }
 
 type InputOption interface {
-	WithErrorHandler(fn func(w http.ResponseWriter, r *http.Request, err error)) InputOptionFn
+	// # Ignored because this already set on default config.
+	// WithErrorHandler(fn func(w http.ResponseWriter, r *http.Request, err error)) InputOptionFn
+
+	/*
+		Understanding Max Memory Allocation, i.e:
+			- 1 kilobyte (KB) = 1024 bytes;
+			- 1 megabyte (MB) = 1024 kilobytes;
+			- 1 MB = 1024 * 1024 = 1,048,576 bytes;
+			- 1 MB = 1 * 1024 * 1024;
+			- formula for: X MB = X * 1024 * 1024;
+	*/
 	WithMaxMemory(n int64) InputOptionFn
 	WithNestedDirectivesEnabled(enabled bool) InputOptionFn
 }
@@ -36,7 +44,9 @@ type InputOption interface {
 type InputOptionFn func(i *inputOptionValues)
 
 type inputOptionValues struct {
-	errorHandler            func(w http.ResponseWriter, r *http.Request, err error)
+	// # Ignored because this already set on default config.
+	// errorHandler func(w http.ResponseWriter, r *http.Request, err error)
+
 	maxMemory               null.Int
 	nestedDirectivesEnabled null.Bool
 }
@@ -47,11 +57,12 @@ func NewInputOption() InputOption {
 	return inputOptions{}
 }
 
-func (inputOptions) WithErrorHandler(fn func(w http.ResponseWriter, r *http.Request, err error)) InputOptionFn {
-	return func(i *inputOptionValues) {
-		i.errorHandler = fn
-	}
-}
+// # Ignored because this already set on default config.
+// func (inputOptions) WithErrorHandler(fn func(w http.ResponseWriter, r *http.Request, err error)) InputOptionFn {
+// 	return func(i *inputOptionValues) {
+// 		i.errorHandler = fn
+// 	}
+// }
 
 func (inputOptions) WithMaxMemory(n int64) InputOptionFn {
 	return func(i *inputOptionValues) {
@@ -75,9 +86,12 @@ func WithInput[T any](opts ...InputOptionFn) func(http.Handler) http.Handler {
 	}
 
 	var copts []core.Option
-	if opt.errorHandler != nil {
-		copts = append(copts, core.WithErrorHandler(opt.errorHandler))
-	}
+
+	// # Ignored because this already set on default config.
+	// if opt.errorHandler != nil {
+	// 	copts = append(copts, core.WithErrorHandler(opt.errorHandler))
+	// }
+
 	if opt.maxMemory.Valid {
 		copts = append(copts, core.WithMaxMemory(opt.maxMemory.Int64))
 	}
@@ -87,24 +101,4 @@ func WithInput[T any](opts ...InputOptionFn) func(http.Handler) http.Handler {
 
 	var in T
 	return httpin.NewInput(&in, copts...)
-}
-
-func DeepCopyRequest(r *http.Request) *http.Request {
-	// Read the body if it's non-nil
-	var bodyBytes []byte
-	if r.Body != nil {
-		bodyBytes, _ = io.ReadAll(r.Body)
-		// Refill the original request body to preserve it for further usage.
-		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-	}
-
-	// Create a shallow copy of the request
-	rCopy := r.Clone(r.Context())
-
-	// Replace the body of the new request with a new reader wrapping the copied bytes
-	if bodyBytes != nil {
-		rCopy.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-	}
-
-	return rCopy
 }

@@ -10,13 +10,10 @@ A Go project starter kit with essential tools and structures.
 - HTTP Rest API - (Done)
 
 ### Todo
-- DTO Validation
 - Logging
-- DB migrations and seeders
 - Makefile Runner
 - Docker Integration
 - Open Telemetry Integration
-- Example Rest API APP
 - CMD Generator handler, middleware, router, repo and service
 - Setup Advance Generator Configuration: yaml -> pkl -> yaml, environment change: dev | prod
 - Unit Test
@@ -30,8 +27,18 @@ A Go project starter kit with essential tools and structures.
 - Setup Basic Generator Configuration
 - Registry Dependency, Repository and Service
 - HTTP Handler and Router Loader
+- DTO Validation
+- DB migrations and seeders
 
 ## Tips
+
+### Go Wrk for API Load Test
+
+- go install github.com/tsliwowicz/go-wrk@latest
+- Go Wrk Running
+```bash
+go-wrk -c 5000 -d 5 -M "POST" -body "{\"email\": \"example@gmail.com\", \"password\": \"secret\"}" http://localhost:8081/api/v1/auth/login
+```
 
 ### Golang Build
 

@@ -24,5 +24,13 @@ func (r *routerAuthImpl) Loader(router chi.Router) bootstrap.LoaderRouter {
 }
 
 func (r *routerAuthImpl) Route() {
-	r.router.With(xhttputil.WithInput[dto.AuthLoginReqDTO]()).Post("/api/v1/auth/login", r.handler.Login)
+	inputOption := xhttputil.NewInputOption()
+	r.router.
+		With(
+			xhttputil.WithInput[dto.AuthLoginReqDTO](
+				// Max Memory Allocation: 15 MB
+				inputOption.WithMaxMemory(15*1024*1024),
+			),
+		).
+		Post("/api/v1/auth/login", r.handler.Login)
 }

@@ -21,5 +21,7 @@ func AppServiceLoader(cfg *appconfig.AppConfig, dep *registry.AppDependency, rep
 
 		// # List Of Service
 		service_impl.NewUserServiceImpl(),
+
+		// add more on here...
 	)
 }

@@ -13,40 +13,38 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
 )
 
-type NatsClient struct {
-	cfg *appconfig.AppConfig
+type natsClient struct{}
+
+func NewNatsClient() *natsClient {
+	return &natsClient{}
 }
 
-func NewNatsClient(cfg *appconfig.AppConfig) *NatsClient {
-	return &NatsClient{cfg}
-}
-
-func (n *NatsClient) Create(_ context.Context) (*nats.Conn, error) {
-	if !n.cfg.Nats.Enabled {
+func (n *natsClient) Create(_ context.Context, cfg *appconfig.AppConfig) (*nats.Conn, error) {
+	if !cfg.Nats.Enabled {
 		return nil, errors.New("nats client message broker is disabled")
 	}
 
 	var options []nats.Option
-	if n.cfg.Nats.Auth.Enabled {
+	if cfg.Nats.Auth.Enabled {
 		options = append(options, nats.UserInfo(
-			n.cfg.Nats.Auth.Username,
-			n.cfg.Nats.Auth.Password,
+			cfg.Nats.Auth.Username,
+			cfg.Nats.Auth.Password,
 		))
 	}
 
 	return nats.Connect(
 		fmt.Sprintf(
 			"nats://%s:%d",
-			n.cfg.Nats.Host,
-			n.cfg.Nats.Port,
+			cfg.Nats.Host,
+			cfg.Nats.Port,
 		),
 		options...,
 	)
 }
 
-func (n *NatsClient) Loader(ctx context.Context, app *registry.AppDependency) {
+func (n *natsClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
 	app.NatsConn = lazy.New(func() (*nats.Conn, error) {
-		return n.Create(ctx)
+		return n.Create(ctx, cfg)
 	})
 
 	app.NatsJetStreamConn = lazy.New(func() (jetstream.JetStream, error) {

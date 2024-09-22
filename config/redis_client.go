@@ -11,34 +11,32 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type RedisClient struct {
-	cfg *appconfig.AppConfig
+type redisClient struct{}
+
+func NewRedisClient() *redisClient {
+	return &redisClient{}
 }
 
-func NewRedisClient(cfg *appconfig.AppConfig) *RedisClient {
-	return &RedisClient{cfg}
-}
-
-func (r *RedisClient) Create(_ context.Context) (*redis.Client, error) {
-	if !r.cfg.Redis.Enabled {
+func (r *redisClient) Create(_ context.Context, cfg *appconfig.AppConfig) (*redis.Client, error) {
+	if !cfg.Redis.Enabled {
 		return nil, errors.New("redis client is disabled")
 	}
 
 	op := redis.Options{
-		Addr: fmt.Sprintf("%s:%d", r.cfg.Redis.Host, r.cfg.Redis.Port),
-		DB:   r.cfg.Redis.Db,
+		Addr: fmt.Sprintf("%s:%d", cfg.Redis.Host, cfg.Redis.Port),
+		DB:   cfg.Redis.Db,
 	}
 
-	if r.cfg.Redis.Auth.Enabled {
-		op.Username = r.cfg.Redis.Auth.Username
-		op.Password = r.cfg.Redis.Auth.Password
+	if cfg.Redis.Auth.Enabled {
+		op.Username = cfg.Redis.Auth.Username
+		op.Password = cfg.Redis.Auth.Password
 	}
 
 	return redis.NewClient(&op), nil
 }
 
-func (r *RedisClient) Loader(ctx context.Context, app *registry.AppDependency) {
+func (r *redisClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
 	app.Redis = lazy.New(func() (*redis.Client, error) {
-		return r.Create(ctx)
+		return r.Create(ctx, cfg)
 	})
 }

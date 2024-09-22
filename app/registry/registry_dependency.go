@@ -7,12 +7,14 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog"
 )
 
 // # DEPENDENCY
 
 type AppDependency struct {
 	// register your dependency on here
+	Logger            *zerolog.Logger
 	MySqlDB           lazy.Loader[*sqlx.DB]
 	Redis             lazy.Loader[*redis.Client]
 	NatsConn          lazy.Loader[*nats.Conn]

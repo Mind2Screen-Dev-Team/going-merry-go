@@ -9,4 +9,5 @@ import (
 
 type UserRepoAPI interface {
 	Find(ctx context.Context, p repo_attribute.UserFindAttribute) (*entity.User, error)
+	Count(ctx context.Context, p repo_attribute.UserFindAttribute) (int64, error)
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
 	"github.com/ggicci/httpin"
 )
 
@@ -36,8 +37,8 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //		xRes := xresponse.NewRestResponseWithInterceptor(rw, r, interceptor.NewSomeInterceptHandler())
 //
 //		xReqDto := xhttputil.LoadInput[dto.SomeReqDTO](ctx)
-//		if err := xReqDto.Validate(ctx); err != nil {
-//			return xRes.StatusCode(http.StatusUnprocessableEntity).Code("VALIDATION_ERROR").Msg("Invalid Request Data").JSON()
+//		if err := xReqDto.ValidateWithContext(ctx); err != nil {
+//			return xRes.StatusCode(http.StatusUnprocessableEntity).Code(restkey.INVALID_ARGUMENT).Msg("invalid request data").JSON()
 //		}
 //
 //		// continue your bussines logic ...
@@ -75,7 +76,7 @@ type InterceptHandler[D any, E any] interface {
 // HTTP Rest API Response Getter For Interceptor
 type RestResponseValue[D any, E any] interface {
 	GetMsg() string
-	GetCode() string
+	GetCode() restkey.RestKey
 	GetData() D
 	GetError() E
 	GetStatusCode() int
@@ -88,7 +89,7 @@ type RestResponseValue[D any, E any] interface {
 // HTTP Rest API Response Builder
 type RestResponseSTD[D any, E any] interface {
 	Msg(msg string) RestResponseSTD[D, E]
-	Code(code string) RestResponseSTD[D, E]
+	Code(code restkey.RestKey) RestResponseSTD[D, E]
 	Data(data D) RestResponseSTD[D, E]
 	Error(err E) RestResponseSTD[D, E]
 
@@ -141,8 +142,12 @@ func (r *restResponseSTD[D, E]) GetMsg() string {
 	return r.ResponseSTD.Msg
 }
 
-func (r *restResponseSTD[D, E]) GetCode() string {
-	return r.ResponseSTD.Code
+func (r *restResponseSTD[D, E]) GetCode() restkey.RestKey {
+	code, ok := r.ResponseSTD.Code.(restkey.RestKey)
+	if !ok {
+		return restkey.UNKNOWN
+	}
+	return code
 }
 
 func (r *restResponseSTD[D, E]) GetData() D {
@@ -168,7 +173,7 @@ func (r *restResponseSTD[D, E]) Msg(msg string) RestResponseSTD[D, E] {
 	return r
 }
 
-func (r *restResponseSTD[D, E]) Code(code string) RestResponseSTD[D, E] {
+func (r *restResponseSTD[D, E]) Code(code restkey.RestKey) RestResponseSTD[D, E] {
 	r.ResponseSTD.SetCode(code)
 	return r
 }
@@ -208,13 +213,15 @@ func (r *restResponseSTD[D, E]) Done() {
 	}
 
 	defer func() {
-		if r.interceptHandler != nil {
-			// is only allow call once
-			r.onceFn.Do(func() {
-				// async function
-				go r.interceptHandler.Handler(r.request, r)
-			})
-		}
+		// is only allow call once
+		r.interceptOnceFn.Do(func() {
+			if r.interceptHandler == nil {
+				return
+			}
+
+			// async function
+			go r.interceptHandler.Handler(r.request, r)
+		})
 	}()
 }
 
@@ -224,13 +231,15 @@ func (r *restResponseSTD[D, E]) JSON() {
 	}
 
 	defer func() {
-		if r.interceptHandler != nil {
-			// is only allow call once
-			r.onceFn.Do(func() {
-				// async function
-				go r.interceptHandler.Handler(r.request, r)
-			})
-		}
+		// is only allow call once
+		r.interceptOnceFn.Do(func() {
+			if r.interceptHandler == nil {
+				return
+			}
+
+			// async function
+			go r.interceptHandler.Handler(r.request, r)
+		})
 	}()
 
 	r.ResponseSTD.RestJSON()
@@ -242,13 +251,15 @@ func (r *restResponseSTD[D, E]) JSONOrErr() error {
 	}
 
 	defer func() {
-		if r.interceptHandler != nil {
-			// is only allow call once
-			r.onceFn.Do(func() {
-				// async function
-				go r.interceptHandler.Handler(r.request, r)
-			})
-		}
+		// is only allow call once
+		r.interceptOnceFn.Do(func() {
+			if r.interceptHandler == nil {
+				return
+			}
+
+			// async function
+			go r.interceptHandler.Handler(r.request, r)
+		})
 	}()
 
 	return r.ResponseSTD.RestJSONOrErr()

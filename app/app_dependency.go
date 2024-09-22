@@ -9,15 +9,18 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
 )
 
-func AppDependencyLoader(cfg *appconfig.AppConfig) *registry.AppDependency {
+func AppDependencyLoader(ctx context.Context, cfg *appconfig.AppConfig) *registry.AppDependency {
 	// # Load All Dependency
 	return bootstrap.LoadDependency(
-		context.Background(),
+		ctx,
+		cfg,
 
 		// # List of Dependency
-		config.NewMySQLX(cfg),
-		config.NewNatsClient(cfg),
-		config.NewRedisClient(cfg),
+		config.NewZeroLogConfig(),
+		config.NewHttpinCore(),
+		config.NewMySqlX(),
+		config.NewNatsClient(),
+		config.NewRedisClient(),
 
 		// add more on here...
 	)

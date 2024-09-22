@@ -7,7 +7,56 @@ import "RedisConfig.pkl"
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
 
-class AppHttp {
+class App {
+    /// App Name
+    name: String(!isEmpty) = "Go Skeleton App"
+
+    /// App Domain
+    domain: String(!isEmpty) = "localhost"
+
+    /// App Host
+    host: String(!isEmpty) = "127.0.0.1"
+
+    /// App JWT Configuration
+    jwt: Jwt
+
+    /// App Log Configuration
+    log: Log
+
+    /// App Http Configuration
+    http: Http
+}
+
+class Jwt {
+    /// App JWT Secret
+    secret: String(length == 32) = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
+}
+
+class Log {
+    /// App Log Path
+    path: String(!isEmpty) = "./storage/logs"
+
+    /// App Log Filename
+    filename: String(!isEmpty) = "logs.log"
+    
+    /// App Log Max Backups
+    maxBackups: Int = 10
+
+    /// App Log Max Size, in Mega Bytes (X MB)
+    maxSize: Int = 100
+
+    /// App Log Max Age for backup will deleted, this value in days when 0 not deleted old backup
+    maxAge: Int = 0
+
+    /// App Log Use to Local Time, default UTC
+    localTime: Boolean = false
+}
+
+class Http {
+
+    /// Service Name
+    service: String(!isEmpty) = "go-skeleton-rest-api"
+
     /// App HTTP Port
     port: Int = 8081
 
@@ -27,23 +76,8 @@ class AppHttp {
     handlerTimeout: Int = 60
 }
 
-/// App Name
-appName: String(!isEmpty) = "Go Skeleton App"
-
-/// App Domain
-appDomain: String(!isEmpty) = "localhost"
-
-/// App Host
-appHost: String(!isEmpty) = "127.0.0.1"
-
-/// App JWT Secret
-appJwtSecret: String(length == 32) = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
-
-/// App Log Path
-appLogPath: String(!isEmpty) = "./storage/logs"
-
-/// App Http Configuration
-appHttp: AppHttp
+/// App Configuration
+app: App
 
 /// MySql Configuration
 mysql: MySQLConfig

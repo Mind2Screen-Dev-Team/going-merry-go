@@ -13,16 +13,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type MySQLXClient struct {
-	cfg *appconfig.AppConfig
+type mySqlXClient struct{}
+
+func NewMySqlX() *mySqlXClient {
+	return &mySqlXClient{}
 }
 
-func NewMySQLX(cfg *appconfig.AppConfig) *MySQLXClient {
-	return &MySQLXClient{cfg}
-}
-
-func (s *MySQLXClient) Create(_ context.Context) (db *sqlx.DB, err error) {
-	if !s.cfg.Mysql.Enabled {
+func (s *mySqlXClient) Create(_ context.Context, cfg *appconfig.AppConfig) (db *sqlx.DB, err error) {
+	if !cfg.Mysql.Enabled {
 		return nil, errors.New("mysql client database is disabled")
 	}
 
@@ -30,11 +28,11 @@ func (s *MySQLXClient) Create(_ context.Context) (db *sqlx.DB, err error) {
 		"mysql",
 		fmt.Sprintf(
 			"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			s.cfg.Mysql.Auth.Username,
-			s.cfg.Mysql.Auth.Password,
-			s.cfg.Mysql.Host,
-			s.cfg.Mysql.Port,
-			s.cfg.Mysql.Db,
+			cfg.Mysql.Auth.Username,
+			cfg.Mysql.Auth.Password,
+			cfg.Mysql.Host,
+			cfg.Mysql.Port,
+			cfg.Mysql.Db,
 		),
 	)
 	if err != nil {
@@ -51,8 +49,8 @@ func (s *MySQLXClient) Create(_ context.Context) (db *sqlx.DB, err error) {
 	return db, err
 }
 
-func (s *MySQLXClient) Loader(ctx context.Context, app *registry.AppDependency) {
+func (s *mySqlXClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
 	app.MySqlDB = lazy.New(func() (db *sqlx.DB, err error) {
-		return s.Create(ctx)
+		return s.Create(ctx, cfg)
 	})
 }
