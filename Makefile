@@ -24,7 +24,7 @@ migrate-status:
 	@$(GOOSE_MIGRATE_CMD) status
 
 migrate-create:
-	@$(GOOSE_MIGRATE_CMD) create $(name) $(type)
+	@$(GOOSE_MIGRATE_CMD) create $(n) $(t)
 
 migrate-reset:
 	@$(GOOSE_MIGRATE_CMD) reset
@@ -49,7 +49,7 @@ seeder-status:
 	@$(GOOSE_SEEDER_CMD) status
 
 seeder-create:
-	@$(GOOSE_SEEDER_CMD) create $(name) $(type)
+	@$(GOOSE_SEEDER_CMD) create $(n) $(t)
 
 seeder-reset:
 	@$(GOOSE_SEEDER_CMD) reset
@@ -82,5 +82,5 @@ migrate-help:
 	@echo "  make (migrate / seeder)-up"
 	@echo "  make (migrate / seeder)-down"
 	@echo "  make (migrate / seeder)-status"
-	@echo "  make (migrate / seeder)-create name=create_name_table type=sql"
+	@echo "  make (migrate / seeder)-create n=create_<table_name>_table t=sql"
 	@echo "  make (migrate / seeder)-validate"
