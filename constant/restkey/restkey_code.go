@@ -50,5 +50,5 @@ const (
 	UNAUTHENTICATED  RestKey = "UNAUTHENTICATED"
 	INTERNAL         RestKey = "INTERNAL"
 
-	// add more here...
+	// add more on here...
 )
