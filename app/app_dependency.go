@@ -16,6 +16,7 @@ func AppDependencyLoader(ctx context.Context, cfg *appconfig.AppConfig) *registr
 		cfg,
 
 		// # List of Dependency
+		config.NewLumberJackConfig(),
 		config.NewZeroLogConfig(),
 		config.NewHttpinCore(),
 		config.NewMySqlX(),

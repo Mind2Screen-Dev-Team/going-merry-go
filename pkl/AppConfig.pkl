@@ -32,12 +32,14 @@ class Jwt {
     secret: String(length == 32) = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
 }
 
+typealias TimeFormat = "RFC3339"|"Unix"|"UnixMs"|"UnixMicro"|"UnixNano"
+
 class Log {
     /// App Log Path
     path: String(!isEmpty) = "./storage/logs"
 
     /// App Log Filename
-    filename: String(!isEmpty) = "logs.log"
+    filename: String(!isEmpty) = "app-log.log"
     
     /// App Log Max Backups
     maxBackups: Int = 10
@@ -50,6 +52,18 @@ class Log {
 
     /// App Log Use to Local Time, default UTC
     localTime: Boolean = false
+
+    /// App Log Timestamp Used
+    timeFormat: TimeFormat = "UnixMs"
+
+    /// App Log Write to Console
+    consoleLoggingEnabled: Boolean = true
+
+    /// App Log Write to File
+    fileLoggingEnabled: Boolean = true
+
+    /// App Log Rotation Compress
+    compress: Boolean = true
 }
 
 class Http {

@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -18,8 +20,12 @@ import (
 )
 
 func main() {
+	// # Parse App Config Path
+	cfgPath := flag.String("cfg", "pkl/config/example.pkl", "Load Configuration PKL Path File")
+	flag.Parse()
+
 	// # Load App Config
-	cfg, err := appconfig.LoadFromPath(context.Background(), "pkl/config/env.pkl")
+	cfg, err := appconfig.LoadFromPath(context.Background(), *cfgPath)
 	if err != nil {
 		panic(err)
 	}
@@ -92,25 +98,41 @@ func main() {
 		),
 	)
 	if err != nil {
-		dep.Logger.Fatal().Msgf("Failed to Load Config HTTP Server, got err: %+v", err)
+		dep.Logger.Fatal("Failed to Load Config HTTP Server", "error", err)
 	}
 
 	srv, err := httpServer.Create(context.Background())
 	if err != nil {
-		dep.Logger.Fatal().Msgf("Failed to Load Initiator HTTP Server, got err: %+v", err)
+		dep.Logger.Fatal("Failed to Load Initiator HTTP Server", "error", err)
 	}
 
+	// # Address
+	address := fmt.Sprintf("http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
+
 	go func() {
-		dep.Logger.Info().Msgf("Start Service HTTP API on address http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
+		dep.Logger.Info(
+			"Start HTTP Service API",
+			"address", address,
+		)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			dep.Logger.Fatal().Msgf("Start Service HTTP API on address http://%s:%d, listen and serve got err: %+v", cfg.App.Host, cfg.App.Http.Port, err)
+			dep.Logger.Fatal(
+				"Error Start ListenAndServe HTTP Service API",
+				"address", address,
+				"error", err,
+			)
 		}
-		dep.Logger.Info().Msgf("Stop Service HTTP API on address http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
+		dep.Logger.Info(
+			"Stop HTTP Service API",
+			"address", address,
+		)
 	}()
 
 	<-stopCh
 
-	log.Printf("Perform shutdown with a maximum timeout of 30 seconds, Service HTTP API on address http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
+	dep.Logger.Info(
+		"Perform shutdown with a maximum timeout of 30 seconds, HTTP Service API",
+		"address", address,
+	)
 	releaseCtx, releaseFn := context.WithTimeout(context.Background(), 30*time.Second)
 
 	defer func() {
@@ -125,10 +147,20 @@ func main() {
 			dep.NatsConn.Value().Close()
 		}
 
-		dep.Logger.Info().Msgf("Successfully Stop Service HTTP API on address http://%s:%d is exited properly", cfg.App.Host, cfg.App.Http.Port)
+		dep.Logger.Info(
+			"Successfully Stop HTTP Service API, application is exited properly",
+			"address", address,
+			"error", err,
+		)
+		if err := dep.LumberjackLogger.Rotate(); err != nil {
+			log.Fatalf("rotate file, got error: %+v\n", err)
+		}
 	}()
 
 	if err := srv.Shutdown(releaseCtx); err != nil {
-		dep.Logger.Info().Msgf("Shutdown Service HTTP API on address http://%s:%d, got err: %+v", cfg.App.Host, cfg.App.Http.Port, err)
+		dep.Logger.Error(
+			"Error Shutdown HTTP Service API, application is exited properly",
+			"address", address,
+		)
 	}
 }

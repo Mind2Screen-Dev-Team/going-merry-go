@@ -1,22 +1,27 @@
 amends "../AppConfig.pkl"
+
 app {
   name = "Go Skeleton App"
   domain = "localhost"
-  host = "0.0.0.0"
+  host = "127.0.0.1"
   jwt {
     secret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
   }
   log {
     path = "./storage/logs"
-    filename = "logs.log"
+    filename = "app-log.log"
     maxBackups = 10
     maxSize = 100
     maxAge = 0
+    timeFormat = "UnixMs"
+    consoleLoggingEnabled = true
+    fileLoggingEnabled = true
     localTime = false
+    compress = false
   }
   http {
-    service = "go-skeleton-rest-api"
-    port = 8081
+    service = "go-skeleton-http-rest-api"
+    port = 8080
     idleTimeout = 30
     readHeaderTimeout = 5
     readTimeout = 15

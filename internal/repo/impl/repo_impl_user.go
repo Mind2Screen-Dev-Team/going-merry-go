@@ -5,7 +5,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/entity"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
 
 	repo_attribute "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/attribute"
 
@@ -13,7 +13,7 @@ import (
 )
 
 type userRepoImpl struct {
-	db *lazy.Loader[*sqlx.DB]
+	db *xlazy.Loader[*sqlx.DB]
 }
 
 func NewUserRepoImpl() *userRepoImpl {

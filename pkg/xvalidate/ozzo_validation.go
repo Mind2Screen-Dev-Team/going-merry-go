@@ -2,14 +2,8 @@ package xvalidate
 
 import (
 	"encoding/json"
-	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-)
-
-var (
-	ErrInvalidJsonMarshal   = errors.New("invalid json marshal error validation")
-	ErrInvalidJsonUnmarshal = errors.New("invalid json unmarshal error validation")
 )
 
 type Errors map[string]any
@@ -33,18 +27,16 @@ func WrapperValidation(err error) error {
 	}
 
 	var errs Errors
-	if e, ok := err.(validation.Errors); ok {
-		b, err := e.MarshalJSON()
-		if err != nil {
-			return ErrInvalidJsonMarshal
-		}
-
-		if err := json.Unmarshal(b, &errs); err != nil {
-			return ErrInvalidJsonUnmarshal
-		}
-
+	if es, ok := err.(validation.Errors); ok {
+		jsonBytes, _ := es.MarshalJSON()
+		json.Unmarshal(jsonBytes, &errs)
 		return errs
 	}
 
 	return nil
+}
+
+func IsErrors(err error) (errs Errors, ok bool) {
+	errs, ok = err.(Errors)
+	return
 }

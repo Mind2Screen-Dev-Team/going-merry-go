@@ -209,7 +209,7 @@ func (r *restResponseSTD[D, E]) DelHeader(key string) RestResponseSTD[D, E] {
 
 func (r *restResponseSTD[D, E]) Done() {
 	if r.statusCode == 0 {
-		r.statusCode = 200 // OK as Default
+		r.statusCode = http.StatusOK // OK as Default
 	}
 
 	defer func() {
@@ -227,7 +227,7 @@ func (r *restResponseSTD[D, E]) Done() {
 
 func (r *restResponseSTD[D, E]) JSON() {
 	if r.statusCode == 0 {
-		r.statusCode = 200 // OK as Default
+		r.statusCode = http.StatusOK // OK as Default
 	}
 
 	defer func() {
@@ -247,7 +247,7 @@ func (r *restResponseSTD[D, E]) JSON() {
 
 func (r *restResponseSTD[D, E]) JSONOrErr() error {
 	if r.statusCode == 0 {
-		r.statusCode = 200 // OK as Default
+		r.statusCode = http.StatusOK // OK as Default
 	}
 
 	defer func() {

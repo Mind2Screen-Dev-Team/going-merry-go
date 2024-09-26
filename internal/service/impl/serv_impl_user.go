@@ -5,7 +5,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/entity"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
 	"github.com/redis/go-redis/v9"
 
 	repo_api "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/api"
@@ -14,7 +14,7 @@ import (
 )
 
 type userServiceImpl struct {
-	redis *lazy.Loader[*redis.Client]
+	redis *xlazy.Loader[*redis.Client]
 	user  repo_api.UserRepoAPI
 }
 

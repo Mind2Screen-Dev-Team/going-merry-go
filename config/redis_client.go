@@ -7,7 +7,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -36,7 +36,7 @@ func (r *redisClient) Create(_ context.Context, cfg *appconfig.AppConfig) (*redi
 }
 
 func (r *redisClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
-	app.Redis = lazy.New(func() (*redis.Client, error) {
+	app.Redis = xlazy.New(func() (*redis.Client, error) {
 		return r.Create(ctx, cfg)
 	})
 }

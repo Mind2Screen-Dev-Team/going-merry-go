@@ -7,7 +7,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -50,7 +50,7 @@ func (s *mySqlXClient) Create(_ context.Context, cfg *appconfig.AppConfig) (db *
 }
 
 func (s *mySqlXClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
-	app.MySqlDB = lazy.New(func() (db *sqlx.DB, err error) {
+	app.MySqlDB = xlazy.New(func() (db *sqlx.DB, err error) {
 		return s.Create(ctx, cfg)
 	})
 }

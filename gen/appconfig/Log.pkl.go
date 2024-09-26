@@ -1,6 +1,8 @@
 // Code generated from Pkl module `AppConfig`. DO NOT EDIT.
 package appconfig
 
+import "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig/timeformat"
+
 type Log struct {
 	// App Log Path
 	Path string `pkl:"path"`
@@ -19,4 +21,16 @@ type Log struct {
 
 	// App Log Use to Local Time, default UTC
 	LocalTime bool `pkl:"localTime"`
+
+	// App Log Timestamp Used
+	TimeFormat timeformat.TimeFormat `pkl:"timeFormat"`
+
+	// App Log Write to Console
+	ConsoleLoggingEnabled bool `pkl:"consoleLoggingEnabled"`
+
+	// App Log Write to File
+	FileLoggingEnabled bool `pkl:"fileLoggingEnabled"`
+
+	// App Log Rotation Compress
+	Compress bool `pkl:"compress"`
 }

@@ -10,7 +10,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/lazy"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
 )
 
 type natsClient struct{}
@@ -43,11 +43,11 @@ func (n *natsClient) Create(_ context.Context, cfg *appconfig.AppConfig) (*nats.
 }
 
 func (n *natsClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
-	app.NatsConn = lazy.New(func() (*nats.Conn, error) {
+	app.NatsConn = xlazy.New(func() (*nats.Conn, error) {
 		return n.Create(ctx, cfg)
 	})
 
-	app.NatsJetStreamConn = lazy.New(func() (jetstream.JetStream, error) {
+	app.NatsJetStreamConn = xlazy.New(func() (jetstream.JetStream, error) {
 		return jetstream.New(app.NatsConn.Value())
 	})
 }
