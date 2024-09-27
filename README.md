@@ -4,23 +4,17 @@ A Go project starter kit with essential tools and structures.
 ## Plan
 
 ### App
-- Run All APP via Command Line - (Not Yet)
-- APP Scheduler Cron Job - (Not Yet)
-- APP Worker Pub / Sub - (Not Yet)
-- HTTP Rest API - (Done)
+- APP HTTP/1.1 - Rest API - (Done)
+- APP HTTP/2 - GRPC - (On Progress)
+- APP Nats.io - Worker Pub / Sub - (On Progress)
+- APP CronJob - Scheduler Cron Job - (On Progress)
 
 ### Todo
-- Logging
-- Makefile Runner
 - Docker Integration
 - Open Telemetry Integration
-- CMD Generator handler, middleware, router, repo and service
-- Setup Advance Generator Configuration: yaml -> pkl -> yaml, environment change: dev | prod
-- Unit Test
 - Open API Generator Docs
-- Cron Job Scheduler APP
-- Worker Pub/Sub APP
-- GRPC API APP
+- CMD Generator handler, middleware, router, repo and service
+- Unit Test
 
 ### Done
 - Base Structural Directory
@@ -29,6 +23,8 @@ A Go project starter kit with essential tools and structures.
 - HTTP Handler and Router Loader
 - DTO Validation
 - DB migrations and seeders
+- Logging
+- Makefile Runner
 
 ## Tips
 

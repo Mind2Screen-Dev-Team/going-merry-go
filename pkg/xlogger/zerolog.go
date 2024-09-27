@@ -1,29 +1,113 @@
 package xlogger
 
 import (
+	"fmt"
+
 	"github.com/rs/zerolog"
 )
 
 type Logger interface {
 	/*
 		Fields is a helper function to use a map or slice to set fields using type assertion.
-		Only map[string]any and []any are accepted. []any must alternate string keys and arbitrary values,
-		and extraneous ones are ignored. i.e:
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
 
 		With Request HTTP Context:
 
 			first := "first value"
 			second := "second value"
-			xlogger.RequestContext(ctx).Info("hello", "first", first, "second", second)
-			xlogger.RequestContext(ctx).Info(fmt.Sprintf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Trace("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Trace(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Trace("oh snap! got error", "error", fmt.Sprint("%+v", err))
 	*/
 	Trace(msg string, fields ...any)
+
+	/*
+		Fields is a helper function to use a map or slice to set fields using type assertion.
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
+
+		With Request HTTP Context:
+
+			first := "first value"
+			second := "second value"
+			xlogger.FromReqCtx(ctx).Debug("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Debug(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Debug("oh snap! got error", "error", fmt.Sprint("%+v", err))
+	*/
 	Debug(msg string, fields ...any)
+
+	/*
+		Fields is a helper function to use a map or slice to set fields using type assertion.
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
+
+		With Request HTTP Context:
+
+			first := "first value"
+			second := "second value"
+			xlogger.FromReqCtx(ctx).Info("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Info(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Info("oh snap! got error", "error", fmt.Sprint("%+v", err))
+	*/
 	Info(msg string, fields ...any)
+
+	/*
+		Fields is a helper function to use a map or slice to set fields using type assertion.
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
+
+		With Request HTTP Context:
+
+			first := "first value"
+			second := "second value"
+			xlogger.FromReqCtx(ctx).Warn("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Warn(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Warn("oh snap! got error", "error", fmt.Sprint("%+v", err))
+	*/
 	Warn(msg string, fields ...any)
+
+	/*
+		Fields is a helper function to use a map or slice to set fields using type assertion.
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
+
+		With Request HTTP Context:
+
+			first := "first value"
+			second := "second value"
+			xlogger.FromReqCtx(ctx).Error("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Error(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Error("oh snap! got error", "error", fmt.Sprint("%+v", err))
+	*/
 	Error(msg string, fields ...any)
+
+	/*
+		Fields is a helper function to use a map or slice to set fields using type assertion.
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
+
+		With Request HTTP Context:
+
+			first := "first value"
+			second := "second value"
+			xlogger.FromReqCtx(ctx).Fatal("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Fatal(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Fatal("oh snap! got error", "error", fmt.Sprint("%+v", err))
+	*/
 	Fatal(msg string, fields ...any)
+
+	/*
+		Fields is a helper function to use a map or slice to set fields using type assertion.
+		[]any must alternate string keys and arbitrary values, and extraneous ones are ignored. i.e:
+
+		With Request HTTP Context:
+
+			first := "first value"
+			second := "second value"
+			xlogger.FromReqCtx(ctx).Panic("hello", "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Panic(xlogger.Msgf("hello %s", "world!"), "first", first, "second", second)
+			xlogger.FromReqCtx(ctx).Panic("oh snap! got error", "error", fmt.Sprint("%+v", err))
+	*/
 	Panic(msg string, fields ...any)
+}
+
+func Msgf(msg string, args ...any) string {
+	return fmt.Sprintf(msg, args...)
 }
 
 type ZeroLogger struct {
