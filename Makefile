@@ -11,7 +11,7 @@ go-tidy:
 	@go mod tidy
 
 go-run:
-	@go run ./cmd/$(app)
+	@go run ./cmd/$(app) -cfg=$(cfg)
 
 go-build:
 	@go build -o ./bin/$(app) ./cmd/$(app)

@@ -5,7 +5,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 
 	repo_impl "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/impl"
 )

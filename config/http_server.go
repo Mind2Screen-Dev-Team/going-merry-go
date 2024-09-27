@@ -9,7 +9,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
 type HTTPServer struct {
@@ -57,7 +57,7 @@ func NewHTTPServer(
 
 func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
 	return &http.Server{
-		Addr:              fmt.Sprintf("%s:%d", h.cfg.App.Host, h.cfg.App.Http.Port),
+		Addr:              fmt.Sprintf("%s:%d", h.cfg.App.Http.Host, h.cfg.App.Http.Port),
 		Handler:           h.handler,
 		IdleTimeout:       h.option.IdleTimeout,
 		ReadHeaderTimeout: h.option.ReadHeaderTimeout,

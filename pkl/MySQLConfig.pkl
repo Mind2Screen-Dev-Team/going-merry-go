@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/mysqlconfig" }
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/mysqlconfig" }
 module MySQLConfig
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"

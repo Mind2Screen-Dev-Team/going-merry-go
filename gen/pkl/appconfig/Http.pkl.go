@@ -5,6 +5,9 @@ type Http struct {
 	// Service Name
 	Service string `pkl:"service"`
 
+	// App HTTP Host
+	Host string `pkl:"host"`
+
 	// App HTTP Port
 	Port int `pkl:"port"`
 

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
 type LoaderDependencyFn interface {

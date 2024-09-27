@@ -1,14 +1,11 @@
 // Code generated from Pkl module `AppConfig`. DO NOT EDIT.
 package appconfig
 
-import "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig/timeformat"
+import "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig/timeformat"
 
 type Log struct {
 	// App Log Path
 	Path string `pkl:"path"`
-
-	// App Log Filename
-	Filename string `pkl:"filename"`
 
 	// App Log Max Backups
 	MaxBackups int `pkl:"maxBackups"`

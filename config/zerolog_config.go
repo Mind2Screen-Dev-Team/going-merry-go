@@ -4,16 +4,14 @@ import (
 	"context"
 	"io"
 	"os"
-	"path"
 	"time"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig/timeformat"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig/timeformat"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 
 	"github.com/rs/zerolog"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type zeroLogConfig struct{}
@@ -45,16 +43,9 @@ func (z *zeroLogConfig) Loader(ctx context.Context, cfg *appconfig.AppConfig, de
 		mw = append(mw, dep.LumberjackLogger)
 	}
 
-	dep.ZeroLogger = zerolog.New(io.MultiWriter(mw...)).With().Timestamp().Logger()
+	dep.ZeroLogger = zerolog.New(io.MultiWriter(mw...)).With().Timestamp().Fields(map[string]any{
+		"service.app.name":   cfg.App.Name,
+		"service.app.domain": cfg.App.Domain,
+	}).Logger()
 	dep.Logger = xlogger.NewZeroLogger(&dep.ZeroLogger)
-}
-
-func (z *zeroLogConfig) RollingFile(cfg *appconfig.AppConfig) *lumberjack.Logger {
-	return &lumberjack.Logger{
-		Filename:   path.Join(cfg.App.Log.Path, cfg.App.Log.Filename),
-		MaxBackups: cfg.App.Log.MaxBackups, // files
-		MaxSize:    cfg.App.Log.MaxSize,    // megabytes
-		MaxAge:     cfg.App.Log.MaxAge,     // days
-		LocalTime:  cfg.App.Log.LocalTime,
-	}
 }

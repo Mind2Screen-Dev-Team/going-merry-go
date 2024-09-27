@@ -4,9 +4,9 @@ package appconfig
 import (
 	"context"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/mysqlconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/natsconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/redisconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/mysqlconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/natsconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/redisconfig"
 	"github.com/apple/pkl-go/pkl"
 )
 

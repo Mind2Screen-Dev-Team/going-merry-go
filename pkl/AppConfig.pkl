@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig" }
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig" }
 module AppConfig
 
 import "MySQLConfig.pkl"
@@ -9,13 +9,10 @@ import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
 
 class App {
     /// App Name
-    name: String(!isEmpty) = "Go Skeleton App"
+    name: String(!isEmpty) = "go-skeleton-app"
 
     /// App Domain
     domain: String(!isEmpty) = "localhost"
-
-    /// App Host
-    host: String(!isEmpty) = "127.0.0.1"
 
     /// App JWT Configuration
     jwt: Jwt
@@ -38,9 +35,6 @@ class Log {
     /// App Log Path
     path: String(!isEmpty) = "./storage/logs"
 
-    /// App Log Filename
-    filename: String(!isEmpty) = "app-log.log"
-    
     /// App Log Max Backups
     maxBackups: Int = 10
 
@@ -69,7 +63,10 @@ class Log {
 class Http {
 
     /// Service Name
-    service: String(!isEmpty) = "go-skeleton-rest-api"
+    service: String(!isEmpty) = "go-skeleton-app-rest-api"
+
+    /// App HTTP Host
+    host: String(!isEmpty) = "127.0.0.1"
 
     /// App HTTP Port
     port: Int = 8081

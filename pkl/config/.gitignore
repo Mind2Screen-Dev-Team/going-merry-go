@@ -1,0 +1,6 @@
+# Ignore anything here
+*
+
+# Exclude .gitignore and example.pkl file
+!.gitignore
+!example.pkl

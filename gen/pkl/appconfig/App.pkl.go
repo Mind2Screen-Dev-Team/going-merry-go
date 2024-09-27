@@ -8,9 +8,6 @@ type App struct {
 	// App Domain
 	Domain string `pkl:"domain"`
 
-	// App Host
-	Host string `pkl:"host"`
-
 	// App JWT Configuration
 	Jwt *Jwt `pkl:"jwt"`
 

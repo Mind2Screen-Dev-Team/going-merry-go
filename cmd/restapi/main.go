@@ -15,7 +15,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/appconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/middleware"
 )
 
@@ -42,7 +42,7 @@ func main() {
 	)
 
 	// # Load Application Registry
-	dep, repo, serv := app.LoadRegistry(context.Background(), cfg)
+	dep, repo, serv := app.LoadRegistry(context.Background(), cfg, "app-rest-api.log")
 
 	// # Init Go-Chi Router
 	router := chi.NewRouter()
@@ -98,16 +98,16 @@ func main() {
 		),
 	)
 	if err != nil {
-		dep.Logger.Fatal("Failed to Load Config HTTP Server", "error", err)
+		dep.Logger.Fatal("Failed to Load Config HTTP Server", "error", fmt.Sprintf("%+v", err))
 	}
 
 	srv, err := httpServer.Create(context.Background())
 	if err != nil {
-		dep.Logger.Fatal("Failed to Load Initiator HTTP Server", "error", err)
+		dep.Logger.Fatal("Failed to Load Initiator HTTP Server", "error", fmt.Sprintf("%+v", err))
 	}
 
-	// # Address
-	address := fmt.Sprintf("http://%s:%d", cfg.App.Host, cfg.App.Http.Port)
+	// # Rest API Serve Address
+	address := fmt.Sprintf("http://%s:%d", cfg.App.Http.Host, cfg.App.Http.Port)
 
 	go func() {
 		dep.Logger.Info(
@@ -118,7 +118,7 @@ func main() {
 			dep.Logger.Fatal(
 				"Error Start ListenAndServe HTTP Service API",
 				"address", address,
-				"error", err,
+				"error", fmt.Sprintf("%+v", err),
 			)
 		}
 		dep.Logger.Info(
@@ -150,10 +150,9 @@ func main() {
 		dep.Logger.Info(
 			"Successfully Stop HTTP Service API, application is exited properly",
 			"address", address,
-			"error", err,
 		)
 		if err := dep.LumberjackLogger.Rotate(); err != nil {
-			log.Fatalf("rotate file, got error: %+v\n", err)
+			log.Fatalf("rotate logging file, got error: %+v\n", err)
 		}
 	}()
 
