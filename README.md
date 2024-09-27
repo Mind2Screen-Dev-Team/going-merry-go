@@ -30,8 +30,12 @@ A Go project starter kit with essential tools and structures.
 
 ### Go Wrk for API Load Test
 
-- go install github.com/tsliwowicz/go-wrk@latest
-- Go Wrk Running
+- Installing `Go-Wrk` Tool
+```bash
+go install github.com/tsliwowicz/go-wrk@latest
+```
+
+- Running `Go-Wrk`
 ```bash
 go-wrk -c 5000 -d 5 -M "POST" -body "{\"email\": \"example@gmail.com\", \"password\": \"secret\"}" http://localhost:8081/api/v1/auth/login
 ```
