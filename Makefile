@@ -28,7 +28,7 @@ go-help:
 	@echo ""
 	@echo "Examples:"
 	@echo "  make tidy"
-	@echo "  make run app=restapi"
+	@echo "  make run app=restapi cfg=<your_pkl_config_file>"
 	@echo "  make build app=restapi"
 
 # Command to run goose with the specified options
