@@ -22,14 +22,14 @@ go-help:
 	@echo "Usage: make [commands] [OPTIONS]"
 	@echo ""
 	@echo "Commands:"
-	@echo "  tidy                    Go module tidy"
-	@echo "  run APPLICATION         Go run application"
-	@echo "  build APPLICATION       Go build application"
+	@echo "  go-tidy                    Go module tidy"
+	@echo "  go-run APPLICATION         Go run application"
+	@echo "  go-build APPLICATION       Go build application"
 	@echo ""
 	@echo "Examples:"
-	@echo "  make tidy"
-	@echo "  make run app=restapi cfg=<your_pkl_config_file>"
-	@echo "  make build app=restapi"
+	@echo "  make go-tidy"
+	@echo "  make go-run app=restapi cfg=<your_pkl_config_file>"
+	@echo "  make go-build app=restapi"
 
 # Command to run goose with the specified options
 GOOSE_MIGRATE_CMD = GOOSE_DRIVER=$(DB_GOOSE_DRIVER) GOOSE_DBSTRING=$(DB_GOOSE_DBSTRING) GOOSE_MIGRATION_DIR=$(DB_GOOSE_MIGRATION_DIR) goose -table $(DB_GOOSE_MIGRATION_TABLE)
