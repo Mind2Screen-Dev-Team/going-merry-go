@@ -33,5 +33,4 @@ func (r *routerAuthImpl) Route() {
 			),
 		).
 		Post("/api/v1/auth/login", r.handler.Login)
-	// r.router.Post("/api/v1/auth/login", r.handler.Login)
 }

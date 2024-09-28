@@ -34,7 +34,7 @@ func NewRestResponse[D any, E any](r *http.Request, rw http.ResponseWriter) Rest
 //	// Controller / Handler
 //	func SomeHandler(rw http.ResponseWriter, r *http.Request) {
 //		ctx := r.Context()
-//		xRes := xresponse.NewRestResponseWithInterceptor(rw, r, interceptor.NewSomeInterceptHandler())
+//		xRes := xresponse.NewRestResponseWithInterceptor(r, rw, interceptor.NewSomeInterceptHandler())
 //
 //		xReqDto := xhttputil.LoadInput[dto.SomeReqDTO](ctx)
 //		if err := xReqDto.ValidateWithContext(ctx); err != nil {
@@ -43,7 +43,7 @@ func NewRestResponse[D any, E any](r *http.Request, rw http.ResponseWriter) Rest
 //
 //		// continue your bussines logic ...
 //	}
-func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E]) RestResponseSTD[D, E] {
+func NewRestResponseWithInterceptor[D any, E any](r *http.Request, rw http.ResponseWriter, handler InterceptHandler[D, E]) RestResponseSTD[D, E] {
 	return &restResponseSTD[D, E]{
 		ResponseSTD: ResponseSTD[D, E]{
 			interceptHandler: handler,
