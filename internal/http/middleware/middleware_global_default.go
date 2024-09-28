@@ -19,9 +19,9 @@ import (
 )
 
 func DefaultGlobal(cfg *appconfig.AppConfig, r chi.Router) {
+	r.Use(middleware.RealIP)
 	r.Use(RequestID)
 	r.Use(Logger)
-	r.Use(middleware.RealIP)
 	r.Use(middleware.Timeout(
 		time.Duration(cfg.Http.HandlerTimeout) * time.Second,
 	))
