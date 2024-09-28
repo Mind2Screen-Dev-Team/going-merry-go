@@ -107,18 +107,18 @@ func main() {
 		),
 	)
 	if err != nil {
-		logger.Fatal("Failed to Load Config HTTP Server", "error", xlogger.Msgf("%+v", err))
+		logger.Fatal("Failed to Load Config HTTP Server", "error", err)
 	}
 
 	srv, err := httpServer.Create(context.Background())
 	if err != nil {
-		logger.Fatal("Failed to Load Initiator HTTP Server", "error", xlogger.Msgf("%+v", err))
+		logger.Fatal("Failed to Load Initiator HTTP Server", "error", err)
 	}
 
 	go func() {
 		logger.Info("Start HTTP Service API")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Fatal("Error Start ListenAndServe HTTP Service API", "error", xlogger.Msgf("%+v", err))
+			logger.Fatal("Error Start ListenAndServe HTTP Service API", "error", err)
 		}
 		logger.Info("Stop HTTP Service API")
 	}()
