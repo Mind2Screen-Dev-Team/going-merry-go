@@ -6,6 +6,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )

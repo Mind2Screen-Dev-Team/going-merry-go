@@ -11,13 +11,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/middleware"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {

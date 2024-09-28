@@ -42,7 +42,7 @@ func (a *AuthLoginReqDTO) IsEmailExists(ctx context.Context) validation.Rule {
 			Email: null.NewString(v, true),
 		})
 		if err != nil || count <= 0 {
-			return validation.NewError("is_email_exists", "user email not exists")
+			return validation.NewError("email_not_exists", "user email not exists")
 		}
 
 		return nil
