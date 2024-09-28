@@ -1,0 +1,33 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/logconfig" }
+module LogConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+typealias TimeFormat = "RFC3339"|"Unix"|"UnixMs"|"UnixMicro"|"UnixNano"
+
+/// Log Path
+path: String(!isEmpty) = "./storage/logs"
+
+/// Log Max Backups
+maxBackups: Int = 10
+
+/// Log Max Size, in Mega Bytes (X MB)
+maxSize: Int = 100
+
+/// Log Max Age for backup will deleted, this value in days when 0 not deleted old backup
+maxAge: Int = 0
+
+/// Log Use to Local Time, default UTC
+localTime: Boolean = false
+
+/// Log Timestamp Used
+timeFormat: TimeFormat = "UnixMs"
+
+/// Log Write to Console
+consoleLoggingEnabled: Boolean = true
+
+/// Log Write to File
+fileLoggingEnabled: Boolean = true
+
+/// Log Rotation Compress
+compress: Boolean = true

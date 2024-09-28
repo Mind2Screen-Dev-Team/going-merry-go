@@ -1,0 +1,31 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/httpconfig" }
+module HttpConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+/// Service HTTP Name
+serviceName: String(!isEmpty) = "app-rest-api"
+
+/// Service HTTP Domain
+domain: String(!isEmpty) = "localhost"
+
+/// Service HTTP Host
+host: String(!isEmpty) = "127.0.0.1"
+
+/// Service HTTP Port
+port: Int = 8081
+
+/// Service HTTP Idle Timeout
+idleTimeout: Int = 30
+
+/// Service HTTP Read Header Timeout
+readHeaderTimeout: Int = 5
+
+/// Service HTTP Read Timeout
+readTimeout: Int = 15
+
+/// Service HTTP Write Timeout
+writeTimeout: Int = 20
+
+/// Service HTTP Handler Timeout
+handlerTimeout: Int = 60

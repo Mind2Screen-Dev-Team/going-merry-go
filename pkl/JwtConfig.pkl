@@ -1,0 +1,7 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/jwtconfig" }
+module JwtConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+/// JWT Secret Key
+secret: String(length == 32) = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"

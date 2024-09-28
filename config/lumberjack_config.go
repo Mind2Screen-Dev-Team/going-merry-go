@@ -20,11 +20,11 @@ func NewLumberJackConfig(filename string) *lumberJackConfig {
 
 func (lc *lumberJackConfig) Loader(ctx context.Context, cfg *appconfig.AppConfig, dep *registry.AppDependency) {
 	dep.LumberjackLogger = &lumberjack.Logger{
-		Filename:   path.Join(cfg.App.Log.Path, lc.filename),
-		MaxBackups: cfg.App.Log.MaxBackups, // how much backup files
-		MaxSize:    cfg.App.Log.MaxSize,    // how much maximum megabytes
-		MaxAge:     cfg.App.Log.MaxAge,     // how much maximum days, default is 0 that means not deleted old logs
-		LocalTime:  cfg.App.Log.LocalTime,  // default UTC
-		Compress:   cfg.App.Log.Compress,   // default false
+		Filename:   path.Join(cfg.Log.Path, lc.filename),
+		MaxBackups: cfg.Log.MaxBackups, // how much backup files
+		MaxSize:    cfg.Log.MaxSize,    // how much maximum megabytes
+		MaxAge:     cfg.Log.MaxAge,     // how much maximum days, default is 0 that means not deleted old logs
+		LocalTime:  cfg.Log.LocalTime,  // default UTC
+		Compress:   cfg.Log.Compress,   // default false
 	}
 }

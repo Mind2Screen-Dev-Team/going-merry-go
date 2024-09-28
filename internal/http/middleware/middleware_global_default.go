@@ -1,64 +1,92 @@
 package middleware
 
 import (
+	"bytes"
+	"context"
 	"net/http"
 	"runtime/debug"
 	"time"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
+
+	"github.com/DataDog/gostackparse"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rs/xid"
 )
 
-func DefaultGlobal(cfg *appconfig.AppConfig, dep *registry.AppDependency, r chi.Router) {
-	r.Use(middleware.RequestID)
+func DefaultGlobal(cfg *appconfig.AppConfig, r chi.Router) {
+	r.Use(RequestID)
+	r.Use(Logger)
 	r.Use(middleware.RealIP)
-	r.Use(Logger(dep.Logger))
-	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(
-		time.Duration(cfg.App.Http.HandlerTimeout) * time.Second,
+		time.Duration(cfg.Http.HandlerTimeout) * time.Second,
 	))
-	r.Use(middleware.Heartbeat("/api/v1/health"))
+	r.Use(middleware.Heartbeat("/health"))
 }
 
-func Logger(logger xlogger.Logger) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			reqId, _ := r.Context().Value(middleware.RequestIDKey).(string)
-			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
-			defer func() {
-				if r := recover(); r != nil && r != http.ErrAbortHandler {
-					logger.Error(
-						// msg
-						"incoming_request_panic",
-						"trace_id", reqId,
-						// fields
-						"recover", r,
-						"stack", debug.Stack(),
-					)
-					ww.WriteHeader(http.StatusInternalServerError)
-				}
-
-				logger.Info(
-					// msg
-					"incoming request",
-					// fields
-					"trace_id", reqId,
-					"remote_addr", r.RemoteAddr,
-					"path", r.URL.Path,
-					"proto", r.Proto,
-					"method", r.Method,
-					"user_agent", r.UserAgent(),
-					"status", http.StatusText(ww.Status()),
-					"status_code", ww.Status(),
-					"bytes_in", r.ContentLength,
-					"bytes_out", ww.BytesWritten(),
-				)
-			}()
-			next.ServeHTTP(ww, r)
-		}
-		return http.HandlerFunc(fn)
+func RequestID(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, middleware.RequestIDKey, xid.New().String())
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
+	return http.HandlerFunc(fn)
+}
+
+func Logger(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		var (
+			ctx     = r.Context()
+			logger  = xlogger.FromReqCtx(ctx)
+			traceId = ctx.Value(middleware.RequestIDKey)
+
+			ww   = middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+			resp = xresponse.NewRestResponse[any, any](r, ww)
+		)
+
+		defer func() {
+			if r := recover(); r != nil && r != http.ErrAbortHandler {
+				stacks := debug.Stack()
+				parsed, _ := gostackparse.Parse(bytes.NewReader(stacks))
+				logger.Error(
+					// msg
+					"incoming request panic",
+					"traceId", traceId,
+
+					// fields
+					"recover", r,
+					"stack", parsed,
+				)
+
+				resp.StatusCode(http.StatusInternalServerError).Code(restkey.INTERNAL).Msg("internal server error").JSON()
+			}
+
+			logger.Info(
+				// msg
+				"incoming request",
+
+				// fields
+				"traceId", traceId,
+				"remoteAddr", r.RemoteAddr,
+				"path", r.URL.Path,
+				"proto", r.Proto,
+				"method", r.Method,
+				"userAgent", r.UserAgent(),
+				"status", http.StatusText(ww.Status()),
+				"statusCode", ww.Status(),
+
+				"bytesIn", r.ContentLength,
+				"bytesOut", ww.BytesWritten(),
+			)
+
+		}()
+
+		next.ServeHTTP(ww, r)
+	}
+
+	return http.HandlerFunc(fn)
 }

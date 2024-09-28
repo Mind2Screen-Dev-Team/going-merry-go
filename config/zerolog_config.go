@@ -8,20 +8,21 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig/timeformat"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/logconfig/timeformat"
 
 	"github.com/rs/zerolog"
 )
 
-type zeroLogConfig struct{}
+type zeroLogConfig struct {
+	defaultFields map[string]any
+}
 
-func NewZeroLogConfig() *zeroLogConfig {
-	return &zeroLogConfig{}
+func NewZeroLogConfig(defaultFields map[string]any) *zeroLogConfig {
+	return &zeroLogConfig{defaultFields}
 }
 
 func (z *zeroLogConfig) Loader(ctx context.Context, cfg *appconfig.AppConfig, dep *registry.AppDependency) {
-	switch cfg.App.Log.TimeFormat {
+	switch cfg.Log.TimeFormat {
 	case timeformat.RFC3339:
 		zerolog.TimeFieldFormat = time.RFC3339
 	case timeformat.Unix:
@@ -35,17 +36,13 @@ func (z *zeroLogConfig) Loader(ctx context.Context, cfg *appconfig.AppConfig, de
 	}
 
 	var mw []io.Writer
-	if cfg.App.Log.ConsoleLoggingEnabled {
+	if cfg.Log.ConsoleLoggingEnabled {
 		mw = append(mw, zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
-	if cfg.App.Log.FileLoggingEnabled {
+	if cfg.Log.FileLoggingEnabled {
 		mw = append(mw, dep.LumberjackLogger)
 	}
 
-	dep.ZeroLogger = zerolog.New(io.MultiWriter(mw...)).With().Timestamp().Fields(map[string]any{
-		"service.app.name":   cfg.App.Name,
-		"service.app.domain": cfg.App.Domain,
-	}).Logger()
-	dep.Logger = xlogger.NewZeroLogger(&dep.ZeroLogger)
+	dep.ZeroLogger = zerolog.New(io.MultiWriter(mw...)).With().Timestamp().Fields(z.defaultFields).Logger()
 }

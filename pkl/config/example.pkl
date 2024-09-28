@@ -1,32 +1,28 @@
 amends "../AppConfig.pkl"
 
-app {
-  name = "Go-Skeleton-App"
-  domain = "localhost"
-  jwt {
-    secret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
-  }
-  log {
-    path = "./storage/logs"
-    maxBackups = 10
-    maxSize = 100
-    maxAge = 0
-    timeFormat = "UnixMs"
-    consoleLoggingEnabled = true
-    fileLoggingEnabled = true
-    localTime = false
-    compress = false
-  }
-  http {
-    service = "go-skeleton-app-rest-api"
-    host = "127.0.0.1"
-    port = 8080
-    idleTimeout = 30
-    readHeaderTimeout = 5
-    readTimeout = 15
-    writeTimeout = 20
-    handlerTimeout = 60
-  }
+jwt {
+  secret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
+}
+http {
+  service = "go-skeleton-app-rest-api"
+  host = "127.0.0.1"
+  port = 8080
+  idleTimeout = 30
+  readHeaderTimeout = 5
+  readTimeout = 15
+  writeTimeout = 20
+  handlerTimeout = 60
+}
+log {
+  path = "./storage/logs"
+  maxBackups = 10
+  maxSize = 100
+  maxAge = 0
+  timeFormat = "UnixMs"
+  consoleLoggingEnabled = true
+  fileLoggingEnabled = true
+  localTime = false
+  compress = false
 }
 mysql {
   enabled = true

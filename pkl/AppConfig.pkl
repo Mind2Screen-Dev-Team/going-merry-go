@@ -1,94 +1,23 @@
 @go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig" }
 module AppConfig
 
+import "HttpConfig.pkl"
+import "JwtConfig.pkl"
+import "LogConfig.pkl"
 import "MySQLConfig.pkl"
 import "NatsConfig.pkl"
 import "RedisConfig.pkl"
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
 
-class App {
-    /// App Name
-    name: String(!isEmpty) = "go-skeleton-app"
+/// Http Configuration
+http: HttpConfig
 
-    /// App Domain
-    domain: String(!isEmpty) = "localhost"
+/// Jwt Configuration
+jwt: JwtConfig
 
-    /// App JWT Configuration
-    jwt: Jwt
-
-    /// App Log Configuration
-    log: Log
-
-    /// App Http Configuration
-    http: Http
-}
-
-class Jwt {
-    /// App JWT Secret
-    secret: String(length == 32) = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
-}
-
-typealias TimeFormat = "RFC3339"|"Unix"|"UnixMs"|"UnixMicro"|"UnixNano"
-
-class Log {
-    /// App Log Path
-    path: String(!isEmpty) = "./storage/logs"
-
-    /// App Log Max Backups
-    maxBackups: Int = 10
-
-    /// App Log Max Size, in Mega Bytes (X MB)
-    maxSize: Int = 100
-
-    /// App Log Max Age for backup will deleted, this value in days when 0 not deleted old backup
-    maxAge: Int = 0
-
-    /// App Log Use to Local Time, default UTC
-    localTime: Boolean = false
-
-    /// App Log Timestamp Used
-    timeFormat: TimeFormat = "UnixMs"
-
-    /// App Log Write to Console
-    consoleLoggingEnabled: Boolean = true
-
-    /// App Log Write to File
-    fileLoggingEnabled: Boolean = true
-
-    /// App Log Rotation Compress
-    compress: Boolean = true
-}
-
-class Http {
-
-    /// Service Name
-    service: String(!isEmpty) = "go-skeleton-app-rest-api"
-
-    /// App HTTP Host
-    host: String(!isEmpty) = "127.0.0.1"
-
-    /// App HTTP Port
-    port: Int = 8081
-
-    /// App HTTP Idle Timeout
-    idleTimeout: Int = 30
-
-    /// App HTTP Read Header Timeout
-    readHeaderTimeout: Int = 5
-
-    /// App HTTP Read Timeout
-    readTimeout: Int = 15
-
-    /// App HTTP Write Timeout
-    writeTimeout: Int = 20
-
-    /// App HTTP Handler Timeout
-    handlerTimeout: Int = 60
-}
-
-/// App Configuration
-app: App
+/// Log Configuration
+log: LogConfig
 
 /// MySql Configuration
 mysql: MySQLConfig

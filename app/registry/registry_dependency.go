@@ -2,7 +2,6 @@ package registry
 
 import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 	"github.com/rs/zerolog"
 	"gopkg.in/natefinch/lumberjack.v2"
 
@@ -16,11 +15,11 @@ import (
 
 type AppDependency struct {
 	// register your dependency on here
-	LumberjackLogger  *lumberjack.Logger
-	ZeroLogger        zerolog.Logger
-	Logger            xlogger.Logger
-	MySqlDB           xlazy.Loader[*sqlx.DB]
-	Redis             xlazy.Loader[*redis.Client]
-	NatsConn          xlazy.Loader[*nats.Conn]
-	NatsJetStreamConn xlazy.Loader[jetstream.JetStream]
+	ZeroLogDefaultFields map[string]any
+	LumberjackLogger     *lumberjack.Logger
+	ZeroLogger           zerolog.Logger
+	MySqlDB              xlazy.Loader[*sqlx.DB]
+	Redis                xlazy.Loader[*redis.Client]
+	NatsConn             xlazy.Loader[*nats.Conn]
+	NatsJetStreamConn    xlazy.Loader[jetstream.JetStream]
 }

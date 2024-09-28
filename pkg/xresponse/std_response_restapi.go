@@ -1,19 +1,19 @@
 package xresponse
 
 import (
-	"context"
 	"net/http"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
-	"github.com/ggicci/httpin"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 // A Wrapper HTTP Rest API Response Builder Initiator
-func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E] {
+func NewRestResponse[D any, E any](r *http.Request, rw http.ResponseWriter) RestResponseSTD[D, E] {
 	return &restResponseSTD[D, E]{
 		ResponseSTD: ResponseSTD[D, E]{
 			responseWriter: rw,
+			request:        r,
+			TraceID:        r.Context().Value(middleware.RequestIDKey).(string),
 		},
 	}
 }
@@ -27,7 +27,7 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //		return SomeInterceptHandler{}
 //	}
 //
-//	func (SomeInterceptHandler) SomeInterceptorHandler(req *http.Request, res RestResponseValue[dto.SomeResDTO, dto.SomeResErrorDTO]) {
+//	func (SomeInterceptHandler) Handler(req *http.Request, res RestResponseValue[dto.SomeResDTO, dto.SomeResErrorDTO]) {
 //		// do something on here
 //	}
 //
@@ -43,25 +43,13 @@ func NewRestResponse[D any, E any](rw http.ResponseWriter) RestResponseSTD[D, E]
 //
 //		// continue your bussines logic ...
 //	}
-func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E], ctxKeys ...ctxkey.CtxKey) RestResponseSTD[D, E] {
-	requestCtx := r.Context()
-
-	nextCtx := context.Background()
-	nextCtx = context.WithValue(nextCtx, httpin.Input, requestCtx.Value(httpin.Input))
-	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_CONFIG)
-	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_DEPENDENCY)
-	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_REPOSITORY)
-	nextCtx = copyCtxValue(nextCtx, requestCtx, ctxkey.HTTP_SERVER_APP_SERVICE)
-
-	for _, ctxKey := range ctxKeys {
-		nextCtx = copyCtxValue(nextCtx, requestCtx, ctxKey)
-	}
-
+func NewRestResponseWithInterceptor[D any, E any](rw http.ResponseWriter, r *http.Request, handler InterceptHandler[D, E]) RestResponseSTD[D, E] {
 	return &restResponseSTD[D, E]{
 		ResponseSTD: ResponseSTD[D, E]{
+			interceptHandler: handler,
 			responseWriter:   rw,
 			request:          r,
-			interceptHandler: handler,
+			TraceID:          r.Context().Value(middleware.RequestIDKey).(string),
 		},
 	}
 }

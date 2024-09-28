@@ -4,6 +4,9 @@ package appconfig
 import (
 	"context"
 
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/httpconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/jwtconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/logconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/mysqlconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/natsconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/redisconfig"
@@ -11,8 +14,14 @@ import (
 )
 
 type AppConfig struct {
-	// App Configuration
-	App *App `pkl:"app"`
+	// Http Configuration
+	Http *httpconfig.HttpConfig `pkl:"http"`
+
+	// Jwt Configuration
+	Jwt *jwtconfig.JwtConfig `pkl:"jwt"`
+
+	// Log Configuration
+	Log *logconfig.LogConfig `pkl:"log"`
 
 	// MySql Configuration
 	Mysql *mysqlconfig.MySQLConfig `pkl:"mysql"`

@@ -9,15 +9,20 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
-func AppDependencyLoader(ctx context.Context, cfg *appconfig.AppConfig, logFileName string) *registry.AppDependency {
+type AppDependencyLoaderParams struct {
+	LogFilename      string
+	LogDefaultFields map[string]any
+}
+
+func AppDependencyLoader(ctx context.Context, cfg *appconfig.AppConfig, param AppDependencyLoaderParams) *registry.AppDependency {
 	// # Load All Dependency
 	return bootstrap.LoadDependency(
 		ctx,
 		cfg,
 
 		// # List of Dependency
-		config.NewLumberJackConfig(logFileName),
-		config.NewZeroLogConfig(),
+		config.NewLumberJackConfig(param.LogFilename),
+		config.NewZeroLogConfig(param.LogDefaultFields),
 		config.NewHttpinCore(),
 		config.NewMySqlX(),
 		config.NewNatsClient(),

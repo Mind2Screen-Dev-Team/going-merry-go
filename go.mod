@@ -12,6 +12,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/nats-io/nats.go v1.37.0
 	github.com/redis/go-redis/v9 v9.6.1
+	github.com/rs/xid v1.6.0
 )
 
 require (
@@ -38,6 +39,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/DataDog/gostackparse v0.7.0
 	github.com/rs/zerolog v1.33.0
 	gopkg.in/guregu/null.v4 v4.0.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

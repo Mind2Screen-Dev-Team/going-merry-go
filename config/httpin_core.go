@@ -10,6 +10,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttpin"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
 
 	"github.com/ggicci/httpin/core"
@@ -29,19 +30,29 @@ func (httpinCore) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *reg
 
 	// # Register Error Handler
 	core.RegisterErrorHandler(func(rw http.ResponseWriter, r *http.Request, err error) {
+		logger := xlogger.FromReqCtx(r.Context())
 		// status: 422
-		resp := xresponse.NewRestResponse[any, map[string]any](rw)
+		resp := xresponse.NewRestResponse[any, map[string]any](r, rw)
 		var invalidFieldError *core.InvalidFieldError
 		if errors.As(err, &invalidFieldError) {
-			errs := map[string]any{
-				invalidFieldError.Field: invalidFieldError.ErrorMessage,
+			logger.Error("invalid format, parse request dto", "error", err)
+			resp.StatusCode(http.StatusUnprocessableEntity).Code(restkey.INVALID_ARGUMENT).Msg("failed parse request dto")
+			if invalidFieldError.Directive != "body" {
+				errs := map[string]any{
+					invalidFieldError.Field: invalidFieldError.ErrorMessage,
+				}
+
+				resp.Error(errs).JSON()
+				return
 			}
-			resp.StatusCode(http.StatusUnprocessableEntity).Code(restkey.INVALID_ARGUMENT).Error(errs).JSON()
+
+			resp.JSON()
 			return
 		}
 
 		// status: 500
-		resp.StatusCode(http.StatusInternalServerError).Code(restkey.INTERNAL).Msg("failed to parse a request dto").JSON()
+		logger.Error("internal server error, parse request dto", "error", err)
+		resp.StatusCode(http.StatusInternalServerError).Code(restkey.INTERNAL).Msg("internal server error, failed parse request dto").JSON()
 	})
 
 	// # Register Named Coder

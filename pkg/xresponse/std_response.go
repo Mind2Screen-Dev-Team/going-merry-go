@@ -18,10 +18,11 @@ type ResponseSTD[D any, E any] struct {
 	interceptOnceFn  sync.Once              `json:"-"`
 	interceptHandler InterceptHandler[D, E] `json:"-"`
 
-	Code any    `json:"code"`
-	Msg  string `json:"msg"`
-	Data D      `json:"data"`
-	Err  E      `json:"err"`
+	Code    any    `json:"code"`
+	Msg     string `json:"msg"`
+	Data    D      `json:"data"`
+	Err     E      `json:"err"`
+	TraceID string `json:"traceId"`
 }
 
 func (r *ResponseSTD[D, E]) SetMsg(msg string) *ResponseSTD[D, E] {
@@ -41,6 +42,11 @@ func (r *ResponseSTD[D, E]) SetData(data D) *ResponseSTD[D, E] {
 
 func (r *ResponseSTD[D, E]) SetError(err E) *ResponseSTD[D, E] {
 	r.Err = err
+	return r
+}
+
+func (r *ResponseSTD[D, E]) SetTraceID(traceId string) *ResponseSTD[D, E] {
+	r.TraceID = traceId
 	return r
 }
 

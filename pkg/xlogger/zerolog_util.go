@@ -9,13 +9,12 @@ import (
 
 var (
 	nopZeroLogger = zerolog.Nop()
-	nopLogger     = NewZeroLogger(&nopZeroLogger)
 )
 
 func FromReqCtx(ctx context.Context) Logger {
-	v, ok := ctx.Value(ctxkey.HTTP_SERVER_APP_LOGGER).(Logger)
+	v, ok := ctx.Value(ctxkey.HTTP_SERVER_APP_LOGGER).(*zerolog.Logger)
 	if !ok {
-		v = nopLogger
+		v = &nopZeroLogger
 	}
-	return v
+	return NewZeroLogger(v)
 }

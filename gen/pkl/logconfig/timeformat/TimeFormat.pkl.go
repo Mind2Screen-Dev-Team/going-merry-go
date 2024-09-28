@@ -1,4 +1,4 @@
-// Code generated from Pkl module `AppConfig`. DO NOT EDIT.
+// Code generated from Pkl module `LogConfig`. DO NOT EDIT.
 package timeformat
 
 import (
