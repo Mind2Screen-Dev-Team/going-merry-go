@@ -7,6 +7,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/httpconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/jwtconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/logconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/minioconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/mysqlconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/natsconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/redisconfig"
@@ -22,6 +23,9 @@ type AppConfig struct {
 
 	// Log Configuration
 	Log *logconfig.LogConfig `pkl:"log"`
+
+	// Minio Storage Configuration
+	Minio *minioconfig.MinioConfig `pkl:"minio"`
 
 	// MySql Configuration
 	Mysql *mysqlconfig.MySQLConfig `pkl:"mysql"`

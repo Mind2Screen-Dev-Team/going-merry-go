@@ -4,6 +4,7 @@ module AppConfig
 import "HttpConfig.pkl"
 import "JwtConfig.pkl"
 import "LogConfig.pkl"
+import "MinioConfig.pkl"
 import "MySQLConfig.pkl"
 import "NatsConfig.pkl"
 import "RedisConfig.pkl"
@@ -18,6 +19,9 @@ jwt: JwtConfig
 
 /// Log Configuration
 log: LogConfig
+
+/// Minio Storage Configuration
+minio: MinioConfig
 
 /// MySql Configuration
 mysql: MySQLConfig

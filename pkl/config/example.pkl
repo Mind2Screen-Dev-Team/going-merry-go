@@ -24,6 +24,17 @@ log {
   localTime = false
   compress = false
 }
+minio {
+  enabled = true
+  endpoint = "play.minio.io"
+  useSSL = true
+  credential {
+    enabled = true
+    accessKeyId = "Q3AM3UQ867SPQQA43P2F"
+    secretAccessKey = zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    token = ""
+  }
+}
 mysql {
   enabled = true
   host = "localhost"

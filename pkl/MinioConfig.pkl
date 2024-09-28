@@ -1,0 +1,30 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/minioconfig" }
+module MinioConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class Credential {
+  /// Credential Enabled
+  enabled: Boolean = true
+
+  /// Credential access key id
+  accessKeyId: String(!isEmpty) = "access-key-id"
+
+  /// Credential secret access key
+  secretAccessKey: String(!isEmpty) = "secret-access-key"
+
+  /// Credential secret token
+  token: String = "token"
+}
+
+/// Minio feature is enabled?
+enabled: Boolean = true
+
+/// The endpoint that minio cluster
+endpoint: String(!isEmpty) = "play.min.io"
+
+/// Minio options secure is enabled?
+useSSL: Boolean = false
+
+/// Credential settings for Minio
+credential: Credential

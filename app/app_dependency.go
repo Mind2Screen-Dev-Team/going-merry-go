@@ -23,6 +23,7 @@ func AppDependencyLoader(ctx context.Context, cfg *appconfig.AppConfig, param Ap
 		// # List of Dependency
 		config.NewLumberJackConfig(param.LogFilename),
 		config.NewZeroLogConfig(param.LogDefaultFields),
+		config.NewMinioClient(),
 		config.NewHttpinCore(),
 		config.NewMySqlX(),
 		config.NewNatsClient(),
