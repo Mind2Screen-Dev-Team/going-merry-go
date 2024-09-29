@@ -1,5 +1,8 @@
 include .env
 
+# List all proto files in the proto directory
+PROTO_FILES := $(wildcard $(APP_PROTO_DIR)/*.proto)
+
 # Command Setup
 setup:
 	@echo "1. Install Protoc Generate GO Tool"
@@ -31,6 +34,18 @@ go-run:
 
 go-build:
 	@go build -o ./bin/$(app) ./cmd/$(app)
+	
+go-gen-proto:
+	@echo "Generating Go code from .proto files..."
+	@for proto_file in $(PROTO_FILES); do \
+		echo "Processing: $$proto_file"; \
+		DIR_NAME=$$(basename $$proto_file .proto); \
+		mkdir -p $(APP_PROTO_GEN_DIR)/$$DIR_NAME; \
+		protoc --go_out=$(APP_PROTO_GEN_DIR)/$$DIR_NAME --go_opt=paths=source_relative \
+		       --go-grpc_out=$(APP_PROTO_GEN_DIR)/$$DIR_NAME --go-grpc_opt=paths=source_relative \
+		       -I $(APP_PROTO_DIR) $$proto_file; \
+	done
+	@echo "Go code generation complete!"
 
 go-help:
 	@echo "Application Golang Commands"
@@ -41,11 +56,14 @@ go-help:
 	@echo "  go-tidy                    Go module tidy"
 	@echo "  go-run APPLICATION         Go run application"
 	@echo "  go-build APPLICATION       Go build application"
+	@echo "  go-gen-proto               Go generate grpc protobuff"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make go-tidy"
+	@echo "  make go-run app=restapi"
 	@echo "  make go-run app=restapi cfg=<your_pkl_config_file>"
 	@echo "  make go-build app=restapi"
+	@echo "  make go-gen-proto"
 
 # Command to run goose with the specified options
 GOOSE_MIGRATE_CMD = GOOSE_DRIVER=$(DB_GOOSE_DRIVER) GOOSE_DBSTRING=$(DB_GOOSE_DBSTRING) GOOSE_MIGRATION_DIR=$(DB_GOOSE_MIGRATION_DIR) goose -table $(DB_GOOSE_MIGRATION_TABLE)

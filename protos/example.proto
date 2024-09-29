@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package example;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/grpc/example";
+
+service Example {
+  rpc Message(google.protobuf.Empty) returns (ExampleCheckResponse);
+}
+
+message ExampleCheckResponse {
+  string msg = 1;
+}
