@@ -22,7 +22,7 @@ func NewUserServiceImpl() *userServiceImpl {
 	return &userServiceImpl{}
 }
 
-func (r *userServiceImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appRepository *registry.AppRepository, appService *registry.AppService) {
+func (r *userServiceImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appRepository *registry.AppRepository, appProvider *registry.AppProvider, appService *registry.AppService) {
 	r.redis = &appDependency.Redis
 	r.user = appRepository.User
 	appService.User = r

@@ -20,7 +20,7 @@ func NewUserRepoImpl() *userRepoImpl {
 	return &userRepoImpl{}
 }
 
-func (r *userRepoImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appRepository *registry.AppRepository) {
+func (r *userRepoImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appProvider *registry.AppProvider, appRepository *registry.AppRepository) {
 	r.db = &appDependency.MySqlDB
 	appRepository.User = r
 }
