@@ -35,6 +35,9 @@ type AppConfig struct {
 
 	// Nats Configuration
 	Nats *natsconfig.NatsConfig `pkl:"nats"`
+
+	// Thrid-Party Configuration
+	ThridParty map[string]map[string]any `pkl:"thridParty"`
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a AppConfig

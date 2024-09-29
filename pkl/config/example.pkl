@@ -4,7 +4,7 @@ jwt {
   secret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
 }
 http {
-  service = "go-skeleton-app-rest-api"
+  serviceName = "go-skeleton-app-rest-api"
   host = "127.0.0.1"
   port = 8080
   idleTimeout = 30
@@ -31,7 +31,7 @@ minio {
   credential {
     enabled = true
     accessKeyId = "Q3AM3UQ867SPQQA43P2F"
-    secretAccessKey = zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    secretAccessKey = "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
     token = ""
   }
 }
@@ -65,5 +65,11 @@ nats {
     enabled = true
     username = "mysql"
     password = "secret"
+  }
+}
+thridParty = new Mapping {
+  ["example"] = new Mapping {
+    ["exampleOne"] = 1
+    ["exampleTwo"] = "2"
   }
 }

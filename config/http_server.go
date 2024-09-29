@@ -55,7 +55,7 @@ func NewHTTPServer(
 	}, nil
 }
 
-func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
+func (h *HTTPServer) Create(ctx context.Context) (*http.Server, error) {
 	return &http.Server{
 		Addr:              fmt.Sprintf("%s:%d", h.cfg.Http.Host, h.cfg.Http.Port),
 		Handler:           h.handler,
@@ -64,7 +64,6 @@ func (h *HTTPServer) Create(_ context.Context) (*http.Server, error) {
 		ReadTimeout:       h.option.ReadTimeout,
 		WriteTimeout:      h.option.WriteTimeout,
 		BaseContext: func(l net.Listener) context.Context {
-			ctx := context.Background()
 
 			// # Assign a Value To Context
 			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_CONFIG, h.cfg)

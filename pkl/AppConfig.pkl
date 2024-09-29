@@ -31,3 +31,6 @@ redis: RedisConfig
 
 /// Nats Configuration
 nats: NatsConfig
+
+/// Thrid-Party Configuration
+thridParty: Mapping<String, Mapping<String, Any>>

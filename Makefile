@@ -1,5 +1,17 @@
 include .env
 
+# Command Setup
+setup:
+	@echo "1. Install Protoc Generate GO Tool"
+	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest || { echo 'Error: protoc-gen-go installation failed.'; exit 1; }
+	@echo "2. Install Protoc Generate GO - GRPC Tool"
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest || { echo 'Error: protoc-gen-go-grpc installation failed.'; exit 1; }
+	@echo "3. Install Goose For Migration & Seeder Tool"
+	@go install github.com/pressly/goose/v3/cmd/goose@latest || { echo 'Error: goose installation failed.'; exit 1; }
+	@echo "4. Checking installed tools in GOPATH/bin..."
+	@ls $(shell go env GOPATH)/bin || { echo 'Error: check installation tools in GOPATH/bin.'; exit 1; }
+	@echo "Installation Tools Complete!"
+
 # Command to build config commands
 
 pkl-gen-cfg:
@@ -11,7 +23,11 @@ go-tidy:
 	@go mod tidy
 
 go-run:
-	@go run ./cmd/$(app) -cfg=$(cfg)
+	@if [ -z "$(cfg)" ]; then \
+		go run ./cmd/$(app); \
+	else \
+		go run ./cmd/$(app) -cfg=$(cfg); \
+	fi
 
 go-build:
 	@go build -o ./bin/$(app) ./cmd/$(app)

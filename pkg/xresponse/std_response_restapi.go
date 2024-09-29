@@ -32,7 +32,13 @@ func NewRestResponse[D any, E any](r *http.Request, rw http.ResponseWriter) Rest
 //	}
 //
 //	// Controller / Handler
-//	func SomeHandler(rw http.ResponseWriter, r *http.Request) {
+//	type SomeHandler struct{}
+//
+//	func NewSomeHandler() SomeHandler {
+//		return SomeHandler{}
+//	}
+//
+//	func (SomeHandler) SomeAction(rw http.ResponseWriter, r *http.Request) {
 //		ctx := r.Context()
 //		xRes := xresponse.NewRestResponseWithInterceptor(r, rw, interceptor.NewSomeInterceptHandler())
 //
@@ -108,7 +114,7 @@ type RestResponseSTD[D any, E any] interface {
 	//	responseWriter.WriteHeader(httpStatusCode)
 	JSON()
 
-	// A JSON Response Encoder for HTTP Response Writer With Error, this is also auto set header and status code
+	// A JSON Response Encoder for HTTP Response Writer With Encoded JSON Error, this is also auto set header and status code
 	//	responseWriter.Header().Add("Accept", "application/json")
 	//	responseWriter.Header().Add("Content-Type", "application/json")
 	//

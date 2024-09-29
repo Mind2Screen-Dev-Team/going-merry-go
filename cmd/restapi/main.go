@@ -43,7 +43,7 @@ func main() {
 	)
 
 	// # Load Application Registry
-	dep, repo, serv := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+	dep, repo, serv, _ := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
 		LogFilename: fmt.Sprintf("%s.log", cfg.Http.ServiceName),
 		LogDefaultFields: map[string]any{
 			"serviceName":    cfg.Http.ServiceName,
@@ -51,6 +51,7 @@ func main() {
 		},
 	})
 
+	// # Init Logger
 	logger := xlogger.NewZeroLogger(&dep.ZeroLogger)
 
 	// # Init Go-Chi Router
@@ -132,6 +133,7 @@ func main() {
 		releaseFn()
 
 		// Gracefully Stop Service and Close connection
+
 		if dep.MySqlDB.Loaded() {
 			dep.MySqlDB.Value().DB.Close()
 		}
@@ -147,6 +149,6 @@ func main() {
 	}()
 
 	if err := srv.Shutdown(releaseCtx); err != nil {
-		logger.Error("Error Shutdown HTTP Service API, application is exited properly")
+		logger.Error("Error Shutdown HTTP Service API, application is exited properly", "error", err)
 	}
 }
