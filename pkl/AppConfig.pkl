@@ -1,6 +1,7 @@
 @go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig" }
 module AppConfig
 
+import "GrpcConfig.pkl"
 import "HttpConfig.pkl"
 import "JwtConfig.pkl"
 import "LogConfig.pkl"
@@ -10,6 +11,9 @@ import "NatsConfig.pkl"
 import "RedisConfig.pkl"
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
+
+/// Grpc Configuration
+grpc: GrpcConfig
 
 /// Http Configuration
 http: HttpConfig

@@ -4,6 +4,7 @@ package appconfig
 import (
 	"context"
 
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/grpcconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/httpconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/jwtconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/logconfig"
@@ -15,6 +16,9 @@ import (
 )
 
 type AppConfig struct {
+	// Grpc Configuration
+	Grpc *grpcconfig.GrpcConfig `pkl:"grpc"`
+
 	// Http Configuration
 	Http *httpconfig.HttpConfig `pkl:"http"`
 

@@ -52,7 +52,7 @@ func main() {
 	})
 
 	// # Must Load Dependency At Startup
-	if err := app.MustLoadDependencyAtStartup("restapi", cfg, dep); err != nil {
+	if err := app.MustLoadDependencyAtStartup("rest-api", cfg, dep); err != nil {
 		panic(err)
 	}
 
@@ -138,22 +138,23 @@ func main() {
 	logger.Info("Perform shutdown with a maximum timeout of 30 seconds, HTTP Service API")
 	releaseCtx, releaseFn := context.WithTimeout(context.Background(), 30*time.Second)
 
+	// Gracefully Stop Service and Close connection
 	defer func() {
 		releaseFn()
 
-		// Gracefully Stop Service and Close connection
-
 		if dep.MySqlDB.Loaded() {
 			dep.MySqlDB.Value().DB.Close()
+			logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
 		}
 
 		if dep.NatsConn.Loaded() {
 			dep.NatsConn.Value().Close()
+			logger.Info("Successfully Close Nats Connection", "natsAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port))
 		}
 
-		logger.Info("Successfully Stop HTTP Service API, application is exited properly")
+		logger.Info("Successfully gracefuly Stop HTTP Service API, application is exited properly")
 		if err := dep.LumberjackLogger.Rotate(); err != nil {
-			log.Fatalf("rotate logging file, got error: %+v\n", err)
+			log.Fatalf("rest-api rotate logging file, got error: %+v\n", err)
 		}
 	}()
 

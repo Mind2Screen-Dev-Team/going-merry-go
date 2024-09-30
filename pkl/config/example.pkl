@@ -1,7 +1,23 @@
 amends "../AppConfig.pkl"
 
-jwt {
-  secret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
+grpc {
+  serviceName = "go-skeleton-app-rest-api"
+  host = "127.0.0.1"
+  port = 8081
+  keepAlive {
+    enabled = true
+    policy {
+      minTime = 5
+      permitWithoutStream = true
+    }
+    parameter {
+      maxConnectionIdle = 15
+      maxConnectionAge = 30
+      maxConnectionAgeGrace = 5
+      time = 5
+      timeout = 1
+    }
+  }
 }
 http {
   serviceName = "go-skeleton-app-rest-api"
@@ -12,6 +28,9 @@ http {
   readTimeout = 15
   writeTimeout = 20
   handlerTimeout = 60
+}
+jwt {
+  secret = "gdSyjIkTk47yhSH1RCSlQVmrhmOrzdXi"
 }
 log {
   path = "./storage/logs"

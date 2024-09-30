@@ -1,0 +1,53 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/grpcconfig" }
+module GrpcConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+/// Service GRPC Name
+serviceName: String(!isEmpty) = "app-grpc-api"
+
+/// Service GRPC Domain
+domain: String(!isEmpty) = "localhost"
+
+/// Service GRPC Host
+host: String(!isEmpty) = "127.0.0.1"
+
+/// Service GRPC Port
+port: Int = 8082
+
+/// Service GRPC Keep Alive Configuration
+keepAlive: KeepAlive
+
+/// Service GRPC Keep Alive configuration
+class KeepAlive {
+    enabled: Boolean = true
+    policy: KeepAliveEnforcementPolicy
+    parameter: KeepAliveServerParameter
+}
+
+/// Service GRPC Keep Alive Enforcement Policy
+class KeepAliveEnforcementPolicy {
+    /// If a client pings more than once every X seconds, terminate the connection
+    minTime: Int = 5
+
+    /// Allow pings even when there are no active streams
+    permitWithoutStream: Boolean = true
+}
+
+/// Service GRPC Keep Alive Server Parameters
+class KeepAliveServerParameter {
+    /// If a client is idle for X seconds, send a GOAWAY
+    maxConnectionIdle: Int = 15
+
+    /// If any connection is alive for more than X seconds, send a GOAWAY
+    maxConnectionAge: Int = 30
+
+    /// Allow X seconds for pending RPCs to complete before forcibly closing connections
+    maxConnectionAgeGrace: Int = 5
+
+    /// Ping the client if it is idle for X seconds to ensure the connection is still active
+    time: Int = 5
+
+    /// Wait X second for the ping ack before assuming the connection is dead
+    timeout: Int = 1
+}
