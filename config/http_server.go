@@ -15,6 +15,7 @@ import (
 type HTTPServer struct {
 	cfg  *appconfig.AppConfig
 	dep  *registry.AppDependency
+	prov *registry.AppProvider
 	repo *registry.AppRepository
 	serv *registry.AppService
 
@@ -32,6 +33,7 @@ type httpServerOptionValue struct {
 func NewHTTPServer(
 	cfg *appconfig.AppConfig,
 	dep *registry.AppDependency,
+	prov *registry.AppProvider,
 	repo *registry.AppRepository,
 	serv *registry.AppService,
 	handler http.Handler,
@@ -48,6 +50,7 @@ func NewHTTPServer(
 	return &HTTPServer{
 		cfg,
 		dep,
+		prov,
 		repo,
 		serv,
 		handler,
@@ -69,6 +72,7 @@ func (h *HTTPServer) Create(ctx context.Context) (*http.Server, error) {
 			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_CONFIG, h.cfg)
 			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_DEPENDENCY, h.dep)
 			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_REPOSITORY, h.repo)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_PROVIDER, h.prov)
 			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_SERVICE, h.serv)
 			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_LOGGER, &h.dep.ZeroLogger)
 

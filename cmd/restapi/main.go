@@ -43,13 +43,18 @@ func main() {
 	)
 
 	// # Load Application Registry
-	dep, repo, serv, _ := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+	dep, repo, serv, prov := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
 		LogFilename: fmt.Sprintf("%s.log", cfg.Http.ServiceName),
 		LogDefaultFields: map[string]any{
 			"serviceName":    cfg.Http.ServiceName,
 			"serviceAddress": fmt.Sprintf("http://%s:%d", cfg.Http.Host, cfg.Http.Port),
 		},
 	})
+
+	// # Must Load Dependency At Startup
+	if err := app.MustLoadDependencyAtStartup("restapi", cfg, dep); err != nil {
+		panic(err)
+	}
 
 	// # Init Logger
 	logger := xlogger.NewZeroLogger(&dep.ZeroLogger)
@@ -79,6 +84,10 @@ func main() {
 		// # App Dependency
 		//
 		dep,
+
+		// # App Provider
+		//
+		prov,
 
 		// # App Repository
 		//
