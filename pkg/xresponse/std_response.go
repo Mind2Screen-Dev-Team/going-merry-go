@@ -66,10 +66,6 @@ func (r *ResponseSTD[D, E]) JSON(w io.Writer) {
 	json.NewEncoder(w).Encode(r)
 }
 
-func (r *ResponseSTD[D, E]) JSONOrErr(w io.Writer) error {
-	return json.NewEncoder(w).Encode(r)
-}
-
 // # HTTP Rest API
 
 func (r *ResponseSTD[D, E]) SetStatusCode(code int) *ResponseSTD[D, E] {
@@ -92,13 +88,6 @@ func (r *ResponseSTD[D, E]) RestJSON() {
 	r.responseWriter.Header().Add("Content-Type", "application/json")
 	r.responseWriter.WriteHeader(r.statusCode)
 	r.JSON(r.responseWriter)
-}
-
-func (r *ResponseSTD[D, E]) RestJSONOrErr() error {
-	r.responseWriter.Header().Add("Accept", "application/json")
-	r.responseWriter.Header().Add("Content-Type", "application/json")
-	r.responseWriter.WriteHeader(r.statusCode)
-	return r.JSONOrErr(r.responseWriter)
 }
 
 // # Add More Master Implementation on Here ...

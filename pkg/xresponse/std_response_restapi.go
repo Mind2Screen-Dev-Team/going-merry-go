@@ -2,6 +2,7 @@ package xresponse
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
 	"github.com/go-chi/chi/v5/middleware"
@@ -40,11 +41,11 @@ func NewRestResponse[D any, E any](r *http.Request, rw http.ResponseWriter) Rest
 //
 //	func (SomeHandler) SomeAction(rw http.ResponseWriter, r *http.Request) {
 //		ctx := r.Context()
-//		xRes := xresponse.NewRestResponseWithInterceptor(r, rw, interceptor.NewSomeInterceptHandler())
+//		res := xresponse.NewRestResponseWithInterceptor(r, rw, interceptor.NewSomeInterceptHandler())
 //
-//		xReqDto := xhttputil.LoadInput[dto.SomeReqDTO](ctx)
-//		if err := xReqDto.ValidateWithContext(ctx); err != nil {
-//			return xRes.StatusCode(http.StatusUnprocessableEntity).Code(restkey.INVALID_ARGUMENT).Msg("invalid request data").JSON()
+//		req := xhttputil.LoadInput[dto.SomeReqDTO](ctx)
+//		if err := req.ValidateWithContext(ctx); err != nil {
+//			return res.StatusCode(http.StatusUnprocessableEntity).Code(restkey.INVALID_ARGUMENT).Msg("invalid request data").JSON()
 //		}
 //
 //		// continue your bussines logic ...
@@ -71,6 +72,7 @@ type InterceptHandler[D any, E any] interface {
 type RestResponseValue[D any, E any] interface {
 	GetMsg() string
 	GetCode() restkey.RestKey
+	GetAnyCode() any
 	GetData() D
 	GetError() E
 	GetStatusCode() int
@@ -84,6 +86,7 @@ type RestResponseValue[D any, E any] interface {
 type RestResponseSTD[D any, E any] interface {
 	Msg(msg string) RestResponseSTD[D, E]
 	Code(code restkey.RestKey) RestResponseSTD[D, E]
+	AnyCode(code any) RestResponseSTD[D, E]
 	Data(data D) RestResponseSTD[D, E]
 	Error(err E) RestResponseSTD[D, E]
 
@@ -114,19 +117,12 @@ type RestResponseSTD[D any, E any] interface {
 	//	responseWriter.WriteHeader(httpStatusCode)
 	JSON()
 
-	// A JSON Response Encoder for HTTP Response Writer With Encoded JSON Error, this is also auto set header and status code
-	//	responseWriter.Header().Add("Accept", "application/json")
-	//	responseWriter.Header().Add("Content-Type", "application/json")
-	//
-	//	// Default httpStatusCode is 200
-	//	responseWriter.WriteHeader(httpStatusCode)
-	JSONOrErr() error
-
 	// A General Purpose JSON Response Encoder to text
 	JSONText() (string, error)
 }
 
 type restResponseSTD[D any, E any] struct {
+	onceFn sync.Once
 	ResponseSTD[D, E]
 }
 
@@ -142,6 +138,10 @@ func (r *restResponseSTD[D, E]) GetCode() restkey.RestKey {
 		return restkey.UNKNOWN
 	}
 	return code
+}
+
+func (r *restResponseSTD[D, E]) GetAnyCode() any {
+	return r.ResponseSTD.Code
 }
 
 func (r *restResponseSTD[D, E]) GetData() D {
@@ -168,6 +168,11 @@ func (r *restResponseSTD[D, E]) Msg(msg string) RestResponseSTD[D, E] {
 }
 
 func (r *restResponseSTD[D, E]) Code(code restkey.RestKey) RestResponseSTD[D, E] {
+	r.ResponseSTD.SetCode(code)
+	return r
+}
+
+func (r *restResponseSTD[D, E]) AnyCode(code any) RestResponseSTD[D, E] {
 	r.ResponseSTD.SetCode(code)
 	return r
 }
@@ -236,27 +241,7 @@ func (r *restResponseSTD[D, E]) JSON() {
 		})
 	}()
 
-	r.ResponseSTD.RestJSON()
-}
-
-func (r *restResponseSTD[D, E]) JSONOrErr() error {
-	if r.statusCode == 0 {
-		r.statusCode = http.StatusOK // OK as Default
-	}
-
-	defer func() {
-		// is only allow call once
-		r.interceptOnceFn.Do(func() {
-			if r.interceptHandler == nil {
-				return
-			}
-
-			// async function
-			go r.interceptHandler.Handler(r.request, r)
-		})
-	}()
-
-	return r.ResponseSTD.RestJSONOrErr()
+	r.onceFn.Do(r.ResponseSTD.RestJSON)
 }
 
 func (r *restResponseSTD[D, E]) JSONText() (string, error) {
