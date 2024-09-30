@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package example;
+package greating;
 
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/grpc/example";
 
-service Example {
-  rpc Message(google.protobuf.Empty) returns (ExampleCheckResponse);
+service GreatingService {
+  rpc Say(google.protobuf.Empty) returns (GreatingResponse);
 }
 
-message ExampleCheckResponse {
+message GreatingResponse {
   string msg = 1;
 }
