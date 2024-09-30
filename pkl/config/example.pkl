@@ -1,7 +1,7 @@
 amends "../AppConfig.pkl"
 
 grpc {
-  serviceName = "go-skeleton-app-rest-api"
+  serviceName = "go-skeleton-app-grpc-api"
   host = "127.0.0.1"
   port = 8081
   keepAlive {
