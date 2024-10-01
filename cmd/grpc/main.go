@@ -18,6 +18,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -45,7 +46,7 @@ func main() {
 	address := fmt.Sprintf("%s:%d", cfg.Grpc.Host, cfg.Grpc.Port)
 
 	// # Load Application Registry
-	dep, _, _, _ := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+	dep, repo, serv, prov := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
 		LogFilename: fmt.Sprintf("%s.log", cfg.Grpc.ServiceName),
 		LogDefaultFields: map[string]any{
 			"serviceName":    cfg.Grpc.ServiceName,
@@ -92,7 +93,11 @@ func main() {
 
 	server := grpc.NewServer(opts...)
 
-	// TODO: GRPC Service Loader on here...
+	// GRPC Handler Loader
+	app.AppGRPCHandlerLoader(cfg, server, dep, repo, prov, serv)
+
+	// Register reflection service on gRPC server.
+	reflection.Register(server)
 
 	go func() {
 		logger.Info("Start GRPC Service API")

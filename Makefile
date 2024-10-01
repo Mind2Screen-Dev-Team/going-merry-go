@@ -3,6 +3,23 @@ include .env
 # List all proto files in the proto directory
 PROTO_FILES := $(wildcard $(APP_PROTO_DIR)/*.proto)
 
+help:
+	@echo "Application Available Commands"
+	@echo ""
+	@echo "Usage: make [commands] [OPTIONS]"
+	@echo ""
+	@echo "Commands:"
+	@echo "  setup                      Make setup your project workspace"
+	@echo "  pkl-gen-cfg                Make pkl help you to create configuration"
+	@echo "  go-help                    Make go help command"
+	@echo "  migrate-help               Make migarte help command"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make setup"
+	@echo "  make pkl-gen-cfg"
+	@echo "  make go-help"
+	@echo "  make migrate-help"
+
 # Command Setup
 setup:
 	@echo "1. Install Protoc Generate GO Tool"
@@ -34,7 +51,7 @@ go-run:
 
 go-build:
 	@go build -o ./bin/$(app) ./cmd/$(app)
-	
+
 go-gen-proto:
 	@echo "Generating Go code from .proto files..."
 	@for proto_file in $(PROTO_FILES); do \
