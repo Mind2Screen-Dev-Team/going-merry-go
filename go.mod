@@ -14,7 +14,7 @@ require (
 	github.com/nats-io/nats.go v1.37.0
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/rs/xid v1.6.0
-	google.golang.org/grpc v1.67.0
+	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.34.2
 )
 

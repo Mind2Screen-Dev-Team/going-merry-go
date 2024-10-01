@@ -7,10 +7,22 @@ import (
 )
 
 type LoaderServiceFn interface {
-	Loader(ctx context.Context, dep *registry.AppDependency, repo *registry.AppRepository, prov *registry.AppProvider, serv *registry.AppService)
+	Loader(
+		ctx context.Context,
+		dep *registry.AppDependency,
+		repo *registry.AppRepository,
+		prov *registry.AppProvider,
+		serv *registry.AppService,
+	)
 }
 
-func LoadService(ctx context.Context, dep *registry.AppDependency, repo *registry.AppRepository, prov *registry.AppProvider, loaders ...LoaderServiceFn) *registry.AppService {
+func LoadService(
+	ctx context.Context,
+	dep *registry.AppDependency,
+	repo *registry.AppRepository,
+	prov *registry.AppProvider,
+	loaders ...LoaderServiceFn,
+) *registry.AppService {
 	var serv registry.AppService
 
 	if loaders == nil {
@@ -18,7 +30,13 @@ func LoadService(ctx context.Context, dep *registry.AppDependency, repo *registr
 	}
 
 	for _, l := range loaders {
-		l.Loader(ctx, dep, repo, prov, &serv)
+		l.Loader(
+			ctx,
+			dep,
+			repo,
+			prov,
+			&serv,
+		)
 	}
 
 	return &serv

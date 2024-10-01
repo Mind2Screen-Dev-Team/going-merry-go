@@ -7,6 +7,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/handler"
+
 	"google.golang.org/grpc"
 )
 
@@ -24,7 +25,8 @@ func AppGRPCHandlerLoader(cfg *appconfig.AppConfig, server *grpc.Server, dep *re
 		serv,
 
 		// # List Of GRPC Handler
-		handler.NewHealthHandler(),
+		handler.NewHandlerHealth(),
+		handler.NewHandlerGreating(),
 
 		// add more on here...
 	)

@@ -4,14 +4,13 @@
 // - protoc             v5.28.2
 // source: greating.proto
 
-package example
+package greating
 
 import (
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -27,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GreatingServiceClient interface {
-	Say(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GreatingResponse, error)
+	Say(ctx context.Context, in *GreatingRequest, opts ...grpc.CallOption) (*GreatingResponse, error)
 }
 
 type greatingServiceClient struct {
@@ -38,7 +37,7 @@ func NewGreatingServiceClient(cc grpc.ClientConnInterface) GreatingServiceClient
 	return &greatingServiceClient{cc}
 }
 
-func (c *greatingServiceClient) Say(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GreatingResponse, error) {
+func (c *greatingServiceClient) Say(ctx context.Context, in *GreatingRequest, opts ...grpc.CallOption) (*GreatingResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GreatingResponse)
 	err := c.cc.Invoke(ctx, GreatingService_Say_FullMethodName, in, out, cOpts...)
@@ -52,7 +51,7 @@ func (c *greatingServiceClient) Say(ctx context.Context, in *emptypb.Empty, opts
 // All implementations must embed UnimplementedGreatingServiceServer
 // for forward compatibility.
 type GreatingServiceServer interface {
-	Say(context.Context, *emptypb.Empty) (*GreatingResponse, error)
+	Say(context.Context, *GreatingRequest) (*GreatingResponse, error)
 	mustEmbedUnimplementedGreatingServiceServer()
 }
 
@@ -63,7 +62,7 @@ type GreatingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedGreatingServiceServer struct{}
 
-func (UnimplementedGreatingServiceServer) Say(context.Context, *emptypb.Empty) (*GreatingResponse, error) {
+func (UnimplementedGreatingServiceServer) Say(context.Context, *GreatingRequest) (*GreatingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Say not implemented")
 }
 func (UnimplementedGreatingServiceServer) mustEmbedUnimplementedGreatingServiceServer() {}
@@ -88,7 +87,7 @@ func RegisterGreatingServiceServer(s grpc.ServiceRegistrar, srv GreatingServiceS
 }
 
 func _GreatingService_Say_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(GreatingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -100,7 +99,7 @@ func _GreatingService_Say_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: GreatingService_Say_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreatingServiceServer).Say(ctx, req.(*emptypb.Empty))
+		return srv.(GreatingServiceServer).Say(ctx, req.(*GreatingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

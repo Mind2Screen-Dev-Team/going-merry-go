@@ -10,7 +10,12 @@ import (
 	service_impl "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/service/impl"
 )
 
-func AppServiceLoader(cfg *appconfig.AppConfig, dep *registry.AppDependency, repo *registry.AppRepository, prov *registry.AppProvider) *registry.AppService {
+func AppServiceLoader(
+	cfg *appconfig.AppConfig,
+	dep *registry.AppDependency,
+	repo *registry.AppRepository,
+	prov *registry.AppProvider,
+) *registry.AppService {
 	// # Load All Service
 	return bootstrap.LoadService(
 		context.Background(),

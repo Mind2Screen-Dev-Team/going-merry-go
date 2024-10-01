@@ -13,7 +13,7 @@ type HandlerHealth struct {
 	health.UnimplementedHealthServiceServer
 }
 
-func NewHealthHandler() *HandlerHealth {
+func NewHandlerHealth() *HandlerHealth {
 	return &HandlerHealth{}
 }
 
