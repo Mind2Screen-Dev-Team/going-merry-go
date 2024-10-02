@@ -1,4 +1,22 @@
+# Check and create .env file if not present using a shell command
+.env:
+	@echo ""
+	@echo "Read .env file not found. Copying from .example.env..."
+	@echo ""
+	@cp .example.env .env
+
 include .env
+
+# Set GOPATH to your desired Go path, or it defaults to the system GOPATH if not set
+GOPATH ?= $(shell go env GOPATH)
+GOPATH_BIN := $(GOPATH)/bin
+
+# Prepend GOPATH/bin to PATH if not already present
+ifneq ($(filter $(GOPATH_BIN), $(PATH)),)
+    export PATH := $(PATH)
+else
+    export PATH := $(GOPATH_BIN):$(PATH)
+endif
 
 # List all proto files in the proto directory
 PROTO_FILES := $(wildcard $(APP_PROTO_DIR)/*.proto)
@@ -6,35 +24,43 @@ PROTO_FILES := $(wildcard $(APP_PROTO_DIR)/*.proto)
 help:
 	@echo "Application Available Commands"
 	@echo ""
-	@echo "Usage: make [commands] [OPTIONS]"
+	@echo "Usage: make [commands]"
 	@echo ""
 	@echo "Commands:"
 	@echo "  setup                      Make setup your project workspace"
-	@echo "  pkl-gen-cfg                Make pkl help you to create configuration"
-	@echo "  go-help                    Make go help command"
 	@echo "  migrate-help               Make migarte help command"
+	@echo "  pkl-gen                    Make pkl help you to create configuration"
+	@echo "  go-help                    Make go help command"
+	@echo "  print-path                 Make print current path variable"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make setup"
-	@echo "  make pkl-gen-cfg"
+	@echo "  make pkl-gen"
 	@echo "  make go-help"
 	@echo "  make migrate-help"
 
+print-path:
+	@echo "Current PATH: $(PATH)"
+
 # Command Setup
 setup:
-	@echo "1. Install Protoc Generate GO Tool"
+	@echo "- Install Protoc Generate GO Tool"
 	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest || { echo 'Error: protoc-gen-go installation failed.'; exit 1; }
-	@echo "2. Install Protoc Generate GO - GRPC Tool"
+	@echo "- Install Protoc Generate GO GRPC Tool"
 	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest || { echo 'Error: protoc-gen-go-grpc installation failed.'; exit 1; }
-	@echo "3. Install Goose For Migration & Seeder Tool"
+	@echo "- Install Goose For Migration & Seeder Tool"
 	@go install github.com/pressly/goose/v3/cmd/goose@latest || { echo 'Error: goose installation failed.'; exit 1; }
-	@echo "4. Checking installed tools in GOPATH/bin..."
+	@echo "- Install PKL GO Configuration Generator Tool"
+	@go install github.com/apple/pkl-go/cmd/pkl-gen-go@v0.8.0 || { echo 'Error: goose installation failed.'; exit 1; }
+	@echo "- Checking installed tools in GOPATH/bin..."
+	@echo ""
 	@ls $(shell go env GOPATH)/bin || { echo 'Error: check installation tools in GOPATH/bin.'; exit 1; }
-	@echo "Installation Tools Complete!"
+	@echo ""
+	@echo "Setup Installation Tools Is Complete!"
 
 # Command to build config commands
 
-pkl-gen-cfg:
+pkl-gen:
 	@pkl-gen-go ./pkl/AppConfig.pkl --base-path $(APP_BASE_MODULE)
 
 # Command to run golang commands
