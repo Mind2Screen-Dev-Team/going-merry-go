@@ -34,8 +34,7 @@ func InterceptorLogger(l zerolog.Logger) logging.Logger {
 		md, _ := metadata.FromIncomingContext(ctx)
 
 		// Trace ID
-		traceId := md.Get("traceId")
-		if len(traceId) > 0 {
+		if traceId := md.Get("traceId"); len(traceId) > 0 {
 			fields = append(fields, "traceId", traceId[0])
 		}
 
