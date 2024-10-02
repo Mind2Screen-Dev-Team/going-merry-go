@@ -4,8 +4,8 @@ A Go project starter kit with essential tools and structures.
 ## Plan
 
 ### App
-- APP HTTP/1.1 - Rest API - (Done)
-- APP HTTP/2 - GRPC - (On Progress)
+- APP HTTP/1.1 - Rest API - (DONE)
+- APP HTTP/2 - GRPC - (DONE)
 - APP Nats.io - Worker Pub / Sub - (On Progress)
 - APP CronJob - Scheduler Cron Job - (On Progress)
 
