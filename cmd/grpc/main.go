@@ -117,7 +117,8 @@ func main() {
 		)
 	}
 
-	loggingOpts := []logging.Option{
+	logInt := InterceptorLogger(reg.Dependency.ZeroLogger)
+	logOpts := []logging.Option{
 		logging.WithLogOnEvents(logging.StartCall, logging.FinishCall),
 		// Add any other option (check functions starting with logging.With).
 	}
@@ -126,11 +127,11 @@ func main() {
 	opts = append(opts,
 		grpc.ChainUnaryInterceptor(
 			interceptor_unary.TraceIDInterceptor(),
-			logging.UnaryServerInterceptor(InterceptorLogger(reg.Dependency.ZeroLogger), loggingOpts...),
+			logging.UnaryServerInterceptor(logInt, logOpts...),
 		),
 		grpc.ChainStreamInterceptor(
 			interceptor_stream.TraceIDInterceptor(),
-			logging.StreamServerInterceptor(InterceptorLogger(reg.Dependency.ZeroLogger), loggingOpts...),
+			logging.StreamServerInterceptor(logInt, logOpts...),
 		),
 	)
 
