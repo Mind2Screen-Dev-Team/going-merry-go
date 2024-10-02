@@ -3,15 +3,23 @@ package interceptor_unary
 import (
 	"context"
 
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
-
 	"github.com/rs/xid"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 func RequestIDInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-		resp, err = handler(context.WithValue(ctx, ctxkey.RequestIDKey, xid.New().String()), req)
+		var (
+			inMd, _ = metadata.FromIncomingContext(ctx)
+			md      = metadata.Join(inMd, metadata.New(map[string]string{"traceId": xid.New().String()}))
+		)
+
+		resp, err = handler(
+			metadata.NewIncomingContext(ctx, md),
+			req,
+		)
+
 		return resp, err
 	}
 }

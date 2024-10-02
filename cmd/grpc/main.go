@@ -22,6 +22,7 @@ import (
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -29,6 +30,14 @@ import (
 // This code is simple enough to be copied and not imported.
 func InterceptorLogger(l zerolog.Logger) logging.Logger {
 	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
+		md, _ := metadata.FromIncomingContext(ctx)
+
+		// Trace ID
+		traceId := md.Get("traceId")
+		if len(traceId) > 0 {
+			fields = append(fields, "traceId", traceId[0])
+		}
+
 		switch lvl {
 		case logging.LevelDebug:
 			l.Debug().Fields(fields).Msg(msg)
