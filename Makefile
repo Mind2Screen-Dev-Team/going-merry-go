@@ -51,7 +51,7 @@ setup:
 	@echo "- Install Goose For Migration & Seeder Tool"
 	@go install github.com/pressly/goose/v3/cmd/goose@latest || { echo 'Error: goose installation failed.'; exit 1; }
 	@echo "- Install PKL GO Configuration Generator Tool"
-	@go install github.com/apple/pkl-go/cmd/pkl-gen-go@v0.8.0 || { echo 'Error: goose installation failed.'; exit 1; }
+	@go install github.com/apple/pkl-go/cmd/pkl-gen-go@v0.8.0 || { echo 'Error: pkl-lang configuration generator for golang installation failed.'; exit 1; }
 	@echo "- Checking installed tools in GOPATH/bin..."
 	@echo ""
 	@ls $(shell go env GOPATH)/bin || { echo 'Error: check installation tools in GOPATH/bin.'; exit 1; }
