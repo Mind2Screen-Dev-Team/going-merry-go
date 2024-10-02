@@ -6,7 +6,6 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
 type AppDependencyLoaderParams struct {
@@ -14,11 +13,11 @@ type AppDependencyLoaderParams struct {
 	LogDefaultFields map[string]any
 }
 
-func AppDependencyLoader(ctx context.Context, cfg *appconfig.AppConfig, param AppDependencyLoaderParams) *registry.AppDependency {
+func AppDependencyLoader(ctx context.Context, reg *registry.AppRegistry, param AppDependencyLoaderParams) {
 	// # Load All Dependency
-	return bootstrap.LoadDependency(
+	bootstrap.LoadDependency(
 		ctx,
-		cfg,
+		reg,
 
 		// # List of Dependency
 		config.NewLumberJackConfig(param.LogFilename),

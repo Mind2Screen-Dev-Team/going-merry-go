@@ -42,12 +42,12 @@ func (n *natsClient) Create(_ context.Context, cfg *appconfig.AppConfig) (*nats.
 	)
 }
 
-func (n *natsClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
-	app.NatsConn = xlazy.New(func() (*nats.Conn, error) {
-		return n.Create(ctx, cfg)
+func (n *natsClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
+	reg.Dependency.NatsConn = xlazy.New(func() (*nats.Conn, error) {
+		return n.Create(ctx, reg.Config)
 	})
 
-	app.NatsJetStreamConn = xlazy.New(func() (jetstream.JetStream, error) {
-		return jetstream.New(app.NatsConn.Value())
+	reg.Dependency.NatsJetStreamConn = xlazy.New(func() (jetstream.JetStream, error) {
+		return jetstream.New(reg.Dependency.NatsConn.Value())
 	})
 }

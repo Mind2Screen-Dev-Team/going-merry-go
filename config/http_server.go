@@ -9,16 +9,10 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
 type HTTPServer struct {
-	cfg  *appconfig.AppConfig
-	dep  *registry.AppDependency
-	prov *registry.AppProvider
-	repo *registry.AppRepository
-	serv *registry.AppService
-
+	reg     *registry.AppRegistry
 	handler http.Handler
 	option  *httpServerOptionValue
 }
@@ -31,11 +25,7 @@ type httpServerOptionValue struct {
 }
 
 func NewHTTPServer(
-	cfg *appconfig.AppConfig,
-	dep *registry.AppDependency,
-	prov *registry.AppProvider,
-	repo *registry.AppRepository,
-	serv *registry.AppService,
+	reg *registry.AppRegistry,
 	handler http.Handler,
 	opts ...HttpServerOptionFn,
 ) (*HTTPServer, error) {
@@ -47,20 +37,12 @@ func NewHTTPServer(
 		}
 	}
 
-	return &HTTPServer{
-		cfg,
-		dep,
-		prov,
-		repo,
-		serv,
-		handler,
-		&option,
-	}, nil
+	return &HTTPServer{reg, handler, &option}, nil
 }
 
 func (h *HTTPServer) Create(ctx context.Context) (*http.Server, error) {
 	return &http.Server{
-		Addr:              fmt.Sprintf("%s:%d", h.cfg.Http.Host, h.cfg.Http.Port),
+		Addr:              fmt.Sprintf("%s:%d", h.reg.Config.Http.Host, h.reg.Config.Http.Port),
 		Handler:           h.handler,
 		IdleTimeout:       h.option.IdleTimeout,
 		ReadHeaderTimeout: h.option.ReadHeaderTimeout,
@@ -69,12 +51,12 @@ func (h *HTTPServer) Create(ctx context.Context) (*http.Server, error) {
 		BaseContext: func(l net.Listener) context.Context {
 
 			// # Assign a Value To Context
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_CONFIG, h.cfg)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_DEPENDENCY, h.dep)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_REPOSITORY, h.repo)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_PROVIDER, h.prov)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_SERVICE, h.serv)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_LOGGER, &h.dep.ZeroLogger)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_CONFIG, h.reg.Config)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_DEPENDENCY, h.reg.Dependency)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_REPOSITORY, h.reg.Repository)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_PROVIDER, h.reg.Provider)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_SERVICE, h.reg.Service)
+			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_LOGGER, &h.reg.Dependency.ZeroLogger)
 
 			return ctx
 		},

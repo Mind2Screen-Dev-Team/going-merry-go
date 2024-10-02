@@ -24,6 +24,14 @@ func LoadAppDependency(ctx context.Context) *registry.AppDependency {
 	return v
 }
 
+func LoadAppProvider(ctx context.Context) *registry.AppProvider {
+	v, ok := ctx.Value(ctxkey.HTTP_SERVER_APP_PROVIDER).(*registry.AppProvider)
+	if !ok {
+		return nil
+	}
+	return v
+}
+
 func LoadAppRepository(ctx context.Context) *registry.AppRepository {
 	v, ok := ctx.Value(ctxkey.HTTP_SERVER_APP_REPOSITORY).(*registry.AppRepository)
 	if !ok {

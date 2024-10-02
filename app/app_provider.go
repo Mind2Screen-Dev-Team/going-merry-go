@@ -5,16 +5,15 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
-func AppProviderLoader(cfg *appconfig.AppConfig, dep *registry.AppDependency) *registry.AppProvider {
+func AppProviderLoader(reg *registry.AppRegistry) {
 	// # Load All Provider
-	return bootstrap.LoadProvider(
+	bootstrap.LoadProvider(
 		context.Background(),
 
 		// Link Dependency
-		dep,
+		reg,
 
 		// # List Of Provider
 

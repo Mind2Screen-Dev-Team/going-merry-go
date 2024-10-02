@@ -36,8 +36,8 @@ func (r *redisClient) Create(_ context.Context, cfg *appconfig.AppConfig) (*redi
 	return redis.NewClient(&op), nil
 }
 
-func (r *redisClient) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
-	app.Redis = xlazy.New(func() (*redis.Client, error) {
-		return r.Create(ctx, cfg)
+func (r *redisClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
+	reg.Dependency.Redis = xlazy.New(func() (*redis.Client, error) {
+		return r.Create(ctx, reg.Config)
 	})
 }

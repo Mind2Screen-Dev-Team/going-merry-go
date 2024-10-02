@@ -25,3 +25,7 @@ type AppDependency struct {
 	NatsConn             xlazy.Loader[*nats.Conn]
 	NatsJetStreamConn    xlazy.Loader[jetstream.JetStream]
 }
+
+func NewAppDependency() *AppDependency {
+	return &AppDependency{}
+}

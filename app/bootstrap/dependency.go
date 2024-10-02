@@ -4,23 +4,18 @@ import (
 	"context"
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
 type LoaderDependencyFn interface {
-	Loader(ctx context.Context, cfg *appconfig.AppConfig, dep *registry.AppDependency)
+	Loader(ctx context.Context, dep *registry.AppRegistry)
 }
 
-func LoadDependency(ctx context.Context, cfg *appconfig.AppConfig, loaders ...LoaderDependencyFn) *registry.AppDependency {
-	var dep registry.AppDependency
-
+func LoadDependency(ctx context.Context, reg *registry.AppRegistry, loaders ...LoaderDependencyFn) {
 	if loaders == nil {
-		return &dep
+		return
 	}
 
 	for _, l := range loaders {
-		l.Loader(ctx, cfg, &dep)
+		l.Loader(ctx, reg)
 	}
-
-	return &dep
 }

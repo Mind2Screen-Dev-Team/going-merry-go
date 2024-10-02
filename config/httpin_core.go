@@ -8,7 +8,6 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttpin"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
@@ -24,7 +23,7 @@ func NewHttpinCore() *httpinCore {
 	return &httpinCore{}
 }
 
-func (httpinCore) Loader(ctx context.Context, cfg *appconfig.AppConfig, app *registry.AppDependency) {
+func (httpinCore) Loader(ctx context.Context, reg *registry.AppRegistry) {
 	// # Go-Chi URL Param integrations
 	integration.UseGochiURLParam("path", chi.URLParam)
 

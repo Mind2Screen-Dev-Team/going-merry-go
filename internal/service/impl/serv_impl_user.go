@@ -22,10 +22,10 @@ func NewUserServiceImpl() *userServiceImpl {
 	return &userServiceImpl{}
 }
 
-func (r *userServiceImpl) Loader(ctx context.Context, appDependency *registry.AppDependency, appRepository *registry.AppRepository, appProvider *registry.AppProvider, appService *registry.AppService) {
-	r.redis = &appDependency.Redis
-	r.user = appRepository.User
-	appService.User = r
+func (r *userServiceImpl) Loader(ctx context.Context, reg *registry.AppRegistry) {
+	r.redis = &reg.Dependency.Redis
+	r.user = reg.Repository.User
+	reg.Service.User = r
 }
 
 func (r *userServiceImpl) Find(ctx context.Context, p service_attribute.UserFindAttribute) (*entity.User, error) {

@@ -43,7 +43,7 @@ func main() {
 	)
 
 	// # Load Application Registry
-	dep, repo, serv, prov := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+	reg := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
 		LogFilename: fmt.Sprintf("%s.log", cfg.Http.ServiceName),
 		LogDefaultFields: map[string]any{
 			"serviceName":    cfg.Http.ServiceName,
@@ -52,21 +52,21 @@ func main() {
 	})
 
 	// # Must Load Dependency At Startup
-	if err := app.MustLoadDependencyAtStartup("rest-api", cfg, dep); err != nil {
+	if err := app.MustLoadDependencyAtStartup("rest-api", reg); err != nil {
 		panic(err)
 	}
 
 	// # Init Logger
-	logger := xlogger.NewZeroLogger(&dep.ZeroLogger)
+	logger := xlogger.NewZeroLogger(&reg.Dependency.ZeroLogger)
 
 	// # Init Go-Chi Router
 	router := chi.NewRouter()
 
 	// # Assign Default Global Middleware
-	middleware.DefaultGlobal(cfg, router)
+	middleware.DefaultGlobal(reg, router)
 
 	// # Assign Global Middleware
-	middleware.Global(cfg, dep, repo, serv, router)
+	middleware.Global(reg, router)
 
 	// # Load Router
 	app.LoadRouter(router)
@@ -75,27 +75,9 @@ func main() {
 	httpServerOption := config.NewHttpServerOption()
 	httpServer, err := config.NewHTTPServer(
 
-		// # Required
+		// # App Registry
 		//
-		// # App Configuration
-		//
-		cfg,
-
-		// # App Dependency
-		//
-		dep,
-
-		// # App Provider
-		//
-		prov,
-
-		// # App Repository
-		//
-		repo,
-
-		// # App Service
-		//
-		serv,
+		reg,
 
 		// # App Router
 		//
@@ -142,18 +124,18 @@ func main() {
 	defer func() {
 		releaseFn()
 
-		if dep.MySqlDB.Loaded() {
-			dep.MySqlDB.Value().DB.Close()
+		if reg.Dependency.MySqlDB.Loaded() {
+			reg.Dependency.MySqlDB.Value().DB.Close()
 			logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
 		}
 
-		if dep.NatsConn.Loaded() {
-			dep.NatsConn.Value().Close()
+		if reg.Dependency.NatsConn.Loaded() {
+			reg.Dependency.NatsConn.Value().Close()
 			logger.Info("Successfully Close Nats Connection", "natsAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port))
 		}
 
 		logger.Info("Successfully gracefuly Stop HTTP Service API, application is exited properly")
-		if err := dep.LumberjackLogger.Rotate(); err != nil {
+		if err := reg.Dependency.LumberjackLogger.Rotate(); err != nil {
 			log.Fatalf("rest-api rotate logging file, got error: %+v\n", err)
 		}
 	}()

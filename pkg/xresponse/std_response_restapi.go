@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 // A Wrapper HTTP Rest API Response Builder Initiator
@@ -14,7 +14,7 @@ func NewRestResponse[D any, E any](r *http.Request, rw http.ResponseWriter) Rest
 		ResponseSTD: ResponseSTD[D, E]{
 			responseWriter: rw,
 			request:        r,
-			TraceID:        r.Context().Value(middleware.RequestIDKey).(string),
+			TraceID:        r.Context().Value(ctxkey.RequestIDKey).(string),
 		},
 	}
 }
@@ -56,7 +56,7 @@ func NewRestResponseWithInterceptor[D any, E any](r *http.Request, rw http.Respo
 			interceptHandler: handler,
 			responseWriter:   rw,
 			request:          r,
-			TraceID:          r.Context().Value(middleware.RequestIDKey).(string),
+			TraceID:          r.Context().Value(ctxkey.RequestIDKey).(string),
 		},
 	}
 }

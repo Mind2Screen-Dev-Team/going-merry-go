@@ -7,19 +7,15 @@ import (
 )
 
 type LoaderProviderFn interface {
-	Loader(ctx context.Context, dep *registry.AppDependency, repo *registry.AppProvider)
+	Loader(ctx context.Context, reg *registry.AppRegistry)
 }
 
-func LoadProvider(ctx context.Context, dep *registry.AppDependency, loaders ...LoaderProviderFn) *registry.AppProvider {
-	var repo registry.AppProvider
-
+func LoadProvider(ctx context.Context, reg *registry.AppRegistry, loaders ...LoaderProviderFn) {
 	if loaders == nil {
-		return &repo
+		return
 	}
 
 	for _, l := range loaders {
-		l.Loader(ctx, dep, &repo)
+		l.Loader(ctx, reg)
 	}
-
-	return &repo
 }

@@ -10,3 +10,7 @@ type AppService struct {
 	// register your service on here
 	User service_api.UserServiceAPI
 }
+
+func NewAppService() *AppService {
+	return &AppService{}
+}

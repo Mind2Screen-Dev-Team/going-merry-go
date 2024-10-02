@@ -7,34 +7,15 @@ import (
 )
 
 type LoaderRepositoryFn interface {
-	Loader(
-		ctx context.Context,
-		dep *registry.AppDependency,
-		prov *registry.AppProvider,
-		repo *registry.AppRepository,
-	)
+	Loader(ctx context.Context, reg *registry.AppRegistry)
 }
 
-func LoadRepository(
-	ctx context.Context,
-	dep *registry.AppDependency,
-	prov *registry.AppProvider,
-	loaders ...LoaderRepositoryFn,
-) *registry.AppRepository {
-	var repo registry.AppRepository
-
+func LoadRepository(ctx context.Context, reg *registry.AppRegistry, loaders ...LoaderRepositoryFn) {
 	if loaders == nil {
-		return &repo
+		return
 	}
 
 	for _, l := range loaders {
-		l.Loader(
-			ctx,
-			dep,
-			prov,
-			&repo,
-		)
+		l.Loader(ctx, reg)
 	}
-
-	return &repo
 }

@@ -10,3 +10,7 @@ type AppRepository struct {
 	// register your repository on here
 	User repo_api.UserRepoAPI
 }
+
+func NewAppRepository() *AppRepository {
+	return &AppRepository{}
+}
