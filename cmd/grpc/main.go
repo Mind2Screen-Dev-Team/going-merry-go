@@ -14,9 +14,10 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
-	interceptor_unary "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/unary"
-
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
+
+	interceptor_stream "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/stream"
+	interceptor_unary "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/unary"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/rs/zerolog"
@@ -125,10 +126,11 @@ func main() {
 	// # Set GRPC Unary / Stream Interceptors
 	opts = append(opts,
 		grpc.ChainUnaryInterceptor(
-			interceptor_unary.RequestIDInterceptor(),
+			interceptor_unary.TraceIDInterceptor(),
 			logging.UnaryServerInterceptor(InterceptorLogger(reg.Dependency.ZeroLogger), loggingOpts...),
 		),
 		grpc.ChainStreamInterceptor(
+			interceptor_stream.TraceIDInterceptor(),
 			logging.StreamServerInterceptor(InterceptorLogger(reg.Dependency.ZeroLogger), loggingOpts...),
 		),
 	)

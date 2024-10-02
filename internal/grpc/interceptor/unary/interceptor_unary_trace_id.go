@@ -8,17 +8,14 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-func RequestIDInterceptor() grpc.UnaryServerInterceptor {
+func TraceIDInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 		var (
-			inMd, _ = metadata.FromIncomingContext(ctx)
-			md      = metadata.Join(inMd, metadata.New(map[string]string{"traceId": xid.New().String()}))
+			in, _ = metadata.FromIncomingContext(ctx)
+			md    = metadata.Join(in, metadata.New(map[string]string{"traceId": xid.New().String()}))
 		)
 
-		resp, err = handler(
-			metadata.NewIncomingContext(ctx, md),
-			req,
-		)
+		resp, err = handler(metadata.NewIncomingContext(ctx, md), req)
 
 		return resp, err
 	}
