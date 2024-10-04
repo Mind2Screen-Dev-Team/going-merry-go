@@ -7,21 +7,29 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 )
 
-func LoadRegistry(ctx context.Context, cfg *appconfig.AppConfig, param AppDependencyLoaderParams) *registry.AppRegistry {
+func LoadRegistry(ctx context.Context, cfg *appconfig.AppConfig, param DependencyRegistryLoaderParams) *registry.AppRegistry {
 	// # Initiated Registry
 	reg := registry.NewAppRegistry(cfg)
 
 	// # Load All Dependency
-	AppDependencyLoader(ctx, reg, param)
+	if err := DependencyRegistryLoader(ctx, reg, param); err != nil {
+		panic(err)
+	}
 
 	// # Load All Provider
-	AppProviderLoader(reg)
+	if err := ProviderRegistryLoader(reg); err != nil {
+		panic(err)
+	}
 
 	// # Load All Repository
-	AppRepositoryLoader(reg)
+	if err := RepositoryRegistryLoader(reg); err != nil {
+		panic(err)
+	}
 
 	// # Load All Service
-	AppServiceLoader(reg)
+	if err := ServiceRegistryLoader(reg); err != nil {
+		panic(err)
+	}
 
 	return reg
 }

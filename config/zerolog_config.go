@@ -20,7 +20,7 @@ func NewZeroLogConfig(defaultFields map[string]any) *zeroLogConfig {
 	return &zeroLogConfig{defaultFields}
 }
 
-func (z *zeroLogConfig) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (z *zeroLogConfig) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	switch reg.Config.Log.TimeFormat {
 	case timeformat.RFC3339:
 		zerolog.TimeFieldFormat = time.RFC3339
@@ -44,4 +44,6 @@ func (z *zeroLogConfig) Loader(ctx context.Context, reg *registry.AppRegistry) {
 	}
 
 	reg.Dependency.ZeroLogger = zerolog.New(io.MultiWriter(mw...)).With().Timestamp().Fields(z.defaultFields).Logger()
+
+	return nil
 }

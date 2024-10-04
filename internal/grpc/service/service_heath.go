@@ -1,4 +1,4 @@
-package handler
+package service
 
 import (
 	"context"
@@ -9,21 +9,22 @@ import (
 	"google.golang.org/grpc"
 )
 
-type HandlerHealth struct {
+type GrpcServiceHealth struct {
 	health.UnimplementedHealthServiceServer
 }
 
-func NewHandlerHealth() *HandlerHealth {
-	return &HandlerHealth{}
+func NewGrpcServiceHealth() *GrpcServiceHealth {
+	return &GrpcServiceHealth{}
 }
 
-func (h *HandlerHealth) Loader(ctx context.Context, server *grpc.Server, reg *registry.AppRegistry) {
+func (h *GrpcServiceHealth) Loader(ctx context.Context, server *grpc.Server, reg *registry.AppRegistry) error {
 	// # Register health service server
 	health.RegisterHealthServiceServer(server, h)
 	// # add implemenation here...
+	return nil
 }
 
-func (h *HandlerHealth) Check(ctx context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
+func (h *GrpcServiceHealth) Check(ctx context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
 	ctx, span := xtracer.Start(ctx, "grpc.handler.health.check")
 	defer span.End()
 

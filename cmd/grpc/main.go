@@ -49,7 +49,7 @@ func main() {
 	address := fmt.Sprintf("%s:%d", cfg.Grpc.Host, cfg.Grpc.Port)
 
 	// # Load Application Registry
-	reg := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+	reg := app.LoadRegistry(context.Background(), cfg, app.DependencyRegistryLoaderParams{
 		Module:      "grpc.api.app",
 		LogFilename: fmt.Sprintf("%s.log", cfg.Grpc.ServiceName),
 		LogDefaultFields: map[string]any{
@@ -103,10 +103,11 @@ func main() {
 		),
 	)
 
+	// Grpc Server
 	server := grpc.NewServer(opts...)
 
-	// GRPC Handler Loader
-	app.AppGRPCHandlerLoader(server, reg)
+	// Grpc Service Loader
+	app.AppGrpcServiceLoader(server, reg)
 
 	// Register reflection service on gRPC server.
 	reflection.Register(server)

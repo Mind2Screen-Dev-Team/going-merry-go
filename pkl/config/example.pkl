@@ -1,7 +1,7 @@
 amends "../AppConfig.pkl"
 
 grpc {
-  serviceName = "APP_GRPC_API"
+  serviceName = "app_grpc_api"
   host = "127.0.0.1"
   port = 8081
   keepAlive {
@@ -20,7 +20,7 @@ grpc {
   }
 }
 http {
-  serviceName = "APP_REST_API"
+  serviceName = "app_rest_api"
   host = "127.0.0.1"
   port = 8080
   idleTimeout = 30

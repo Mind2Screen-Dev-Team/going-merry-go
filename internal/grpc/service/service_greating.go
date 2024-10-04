@@ -1,4 +1,4 @@
-package handler
+package service
 
 import (
 	"context"
@@ -9,21 +9,22 @@ import (
 	"google.golang.org/grpc"
 )
 
-type HandlerGreating struct {
+type GrpcServiceGreating struct {
 	greating.UnimplementedGreatingServiceServer
 }
 
-func NewHandlerGreating() *HandlerGreating {
-	return &HandlerGreating{}
+func NewGrpcServiceGreating() *GrpcServiceGreating {
+	return &GrpcServiceGreating{}
 }
 
-func (h *HandlerGreating) Loader(ctx context.Context, server *grpc.Server, reg *registry.AppRegistry) {
+func (h *GrpcServiceGreating) Loader(ctx context.Context, server *grpc.Server, reg *registry.AppRegistry) error {
 	// # Register greating service server
 	greating.RegisterGreatingServiceServer(server, h)
 	// # add implemenation here...
+	return nil
 }
 
-func (h *HandlerGreating) Say(ctx context.Context, r *greating.GreatingRequest) (*greating.GreatingResponse, error) {
+func (h *GrpcServiceGreating) Say(ctx context.Context, r *greating.GreatingRequest) (*greating.GreatingResponse, error) {
 	ctx, span := xtracer.Start(ctx, "grpc.handler.greating.say")
 	defer span.End()
 

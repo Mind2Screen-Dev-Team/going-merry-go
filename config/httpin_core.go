@@ -23,7 +23,7 @@ func NewHttpinCore() *httpinCore {
 	return &httpinCore{}
 }
 
-func (httpinCore) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (httpinCore) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	// # Go-Chi URL Param integrations
 	integration.UseGochiURLParam("path", chi.URLParam)
 
@@ -58,4 +58,6 @@ func (httpinCore) Loader(ctx context.Context, reg *registry.AppRegistry) {
 	core.RegisterNamedCoder("any_time", func(t *time.Time) (core.Stringable, error) {
 		return (*xhttpin.AnyTime)(t), nil
 	})
+
+	return nil
 }

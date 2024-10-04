@@ -5,14 +5,14 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/bootstrap"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
-	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/handler"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/service"
 
 	"google.golang.org/grpc"
 )
 
-func AppGRPCHandlerLoader(server *grpc.Server, reg *registry.AppRegistry) {
-	// # Load All Provider
-	bootstrap.LoadGRPCHandler(
+func AppGrpcServiceLoader(server *grpc.Server, reg *registry.AppRegistry) error {
+	// # Load All Grpc Service
+	return bootstrap.LoadGrpcService(
 		context.Background(),
 
 		// Link Dependency
@@ -20,8 +20,8 @@ func AppGRPCHandlerLoader(server *grpc.Server, reg *registry.AppRegistry) {
 		reg,
 
 		// # List Of GRPC Handler
-		handler.NewHandlerHealth(),
-		handler.NewHandlerGreating(),
+		service.NewGrpcServiceHealth(),
+		service.NewGrpcServiceGreating(),
 
 		// add more on here...
 	)

@@ -10,49 +10,62 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func LoadAppConfig(ctx context.Context) *appconfig.AppConfig {
+// # All
+
+func LoadRegistry(ctx context.Context) *registry.AppRegistry {
+	if v, ok := ctx.Value(ctxkey.REGISTRY_APP).(*registry.AppRegistry); ok {
+		return v
+	}
+	return nil
+}
+
+// # Details
+
+func LoadConfig(ctx context.Context) *appconfig.AppConfig {
 	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_CONFIG).(*appconfig.AppConfig); ok {
 		return v
 	}
 	return nil
 }
 
-func LoadAppDependency(ctx context.Context) *registry.AppDependency {
-	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_DEPENDENCY).(*registry.AppDependency); ok {
+func LoadDependencyRegistry(ctx context.Context) *registry.DependencyRegistry {
+	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_DEPENDENCY).(*registry.DependencyRegistry); ok {
 		return v
 	}
 	return nil
 }
 
-func LoadAppRepository(ctx context.Context) *registry.AppRepository {
-	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_REPOSITORY).(*registry.AppRepository); ok {
+func LoadRepositoryRegistry(ctx context.Context) *registry.RepositoryRegistry {
+	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_REPOSITORY).(*registry.RepositoryRegistry); ok {
 		return v
 	}
 	return nil
 }
 
-func LoadAppService(ctx context.Context) *registry.AppService {
-	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_SERVICE).(*registry.AppService); ok {
+func LoadServiceRegistry(ctx context.Context) *registry.ServiceRegistry {
+	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_SERVICE).(*registry.ServiceRegistry); ok {
 		return v
 	}
 	return nil
 }
 
-func LoadAppProvider(ctx context.Context) *registry.AppProvider {
-	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_PROVIDER).(*registry.AppProvider); ok {
+func LoadProviderRegistry(ctx context.Context) *registry.ProviderRegistry {
+	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_PROVIDER).(*registry.ProviderRegistry); ok {
 		return v
 	}
 	return nil
 }
 
-func LoadAppLogger(ctx context.Context) *zerolog.Logger {
+// # Spesificts
+
+func LoadLogger(ctx context.Context) *zerolog.Logger {
 	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_LOGGER).(*zerolog.Logger); ok {
 		return v
 	}
 	return nil
 }
 
-func LoadAppTracer(ctx context.Context) trace.Tracer {
+func LoadTracer(ctx context.Context) trace.Tracer {
 	if v, ok := ctx.Value(ctxkey.REGISTRY_APP_TRACER).(trace.Tracer); ok {
 		return v
 	}

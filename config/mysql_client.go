@@ -49,8 +49,9 @@ func (s *mySqlXClient) Create(_ context.Context, cfg *appconfig.AppConfig) (db *
 	return db, err
 }
 
-func (s *mySqlXClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (s *mySqlXClient) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	reg.Dependency.MySqlDB = xlazy.New(func() (db *sqlx.DB, err error) {
 		return s.Create(ctx, reg.Config)
 	})
+	return nil
 }

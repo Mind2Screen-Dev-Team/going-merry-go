@@ -38,5 +38,5 @@ func Start(ctx context.Context, spanName string, opts ...trace.SpanStartOption) 
 		attribute.String("requestId", requestId),
 	))
 
-	return config.LoadAppTracer(ctx).Start(ctx, spanName, opts...)
+	return config.LoadTracer(ctx).Start(ctx, spanName, opts...)
 }

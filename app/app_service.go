@@ -9,9 +9,9 @@ import (
 	service_impl "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/service/impl"
 )
 
-func AppServiceLoader(reg *registry.AppRegistry) {
+func ServiceRegistryLoader(reg *registry.AppRegistry) error {
 	// # Load All Service
-	bootstrap.LoadService(
+	return bootstrap.LoadRegistry(
 		context.Background(),
 
 		// Link Dependency and Repository

@@ -8,7 +8,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
 )
 
-type AppDependencyLoaderParams struct {
+type DependencyRegistryLoaderParams struct {
 	Module           string
 	ServerName       string
 	ServerAddr       string
@@ -16,9 +16,9 @@ type AppDependencyLoaderParams struct {
 	LogDefaultFields map[string]any
 }
 
-func AppDependencyLoader(ctx context.Context, reg *registry.AppRegistry, param AppDependencyLoaderParams) {
+func DependencyRegistryLoader(ctx context.Context, reg *registry.AppRegistry, param DependencyRegistryLoaderParams) error {
 	// # Load All Dependency
-	bootstrap.LoadDependency(
+	return bootstrap.LoadRegistry(
 		ctx,
 		reg,
 

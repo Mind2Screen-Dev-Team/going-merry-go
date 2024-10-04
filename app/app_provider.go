@@ -7,9 +7,9 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 )
 
-func AppProviderLoader(reg *registry.AppRegistry) {
+func ProviderRegistryLoader(reg *registry.AppRegistry) error {
 	// # Load All Provider
-	bootstrap.LoadProvider(
+	return bootstrap.LoadRegistry(
 		context.Background(),
 
 		// Link Dependency

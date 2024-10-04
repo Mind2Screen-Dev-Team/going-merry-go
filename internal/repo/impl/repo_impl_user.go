@@ -20,9 +20,10 @@ func NewUserRepoImpl() *userRepoImpl {
 	return &userRepoImpl{}
 }
 
-func (r *userRepoImpl) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (r *userRepoImpl) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	r.db = &reg.Dependency.MySqlDB
 	reg.Repository.User = r
+	return nil
 }
 
 func (r *userRepoImpl) Find(ctx context.Context, p repo_attribute.UserFindAttribute) (*entity.User, error) {

@@ -6,11 +6,11 @@ import (
 
 // # SERVICE
 
-type AppService struct {
+type ServiceRegistry struct {
 	// register your service on here
 	User service_api.UserServiceAPI
 }
 
-func NewAppService() *AppService {
-	return &AppService{}
+func NewServiceRegistry() *ServiceRegistry {
+	return &ServiceRegistry{}
 }

@@ -46,7 +46,7 @@ func main() {
 	addr := fmt.Sprintf("http://%s:%d", cfg.Http.Host, cfg.Http.Port)
 
 	// # Load Application Registry
-	reg := app.LoadRegistry(interruptCtx, cfg, app.AppDependencyLoaderParams{
+	reg := app.LoadRegistry(interruptCtx, cfg, app.DependencyRegistryLoaderParams{
 		Module:      "rest.api.app",
 		ServerName:  cfg.Http.ServiceName,
 		ServerAddr:  addr,

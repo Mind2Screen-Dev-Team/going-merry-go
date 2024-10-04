@@ -16,7 +16,7 @@ func NewMinioClient() *minioClient {
 	return &minioClient{}
 }
 
-func (minioClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (minioClient) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	reg.Dependency.Storage = xlazy.New(func() (*minio.Client, error) {
 		return minio.New(reg.Config.Minio.Endpoint, &minio.Options{
 			Creds: credentials.NewStaticV4(
@@ -27,4 +27,5 @@ func (minioClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
 			Secure: reg.Config.Minio.UseSSL,
 		})
 	})
+	return nil
 }

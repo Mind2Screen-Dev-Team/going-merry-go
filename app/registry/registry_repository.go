@@ -6,11 +6,11 @@ import (
 
 // # REPOSITORY
 
-type AppRepository struct {
+type RepositoryRegistry struct {
 	// register your repository on here
 	User repo_api.UserRepoAPI
 }
 
-func NewAppRepository() *AppRepository {
-	return &AppRepository{}
+func NewRepositoryRegistry() *RepositoryRegistry {
+	return &RepositoryRegistry{}
 }

@@ -40,7 +40,7 @@ func (a *AuthLoginReqDTO) IsEmailExists(ctx context.Context) validation.Rule {
 		defer span.End()
 
 		v, _ := value.(string)
-		repo := config.LoadAppRepository(ctx)
+		repo := config.LoadRepositoryRegistry(ctx)
 		if repo == nil || repo.User == nil {
 			err := errors.New("invalid load user repository")
 			span.RecordError(err)

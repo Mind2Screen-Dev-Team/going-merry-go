@@ -2,8 +2,8 @@ package registry
 
 // # PROVIDER
 
-type AppProvider struct{}
+type ProviderRegistry struct{}
 
-func NewAppProvider() *AppProvider {
-	return &AppProvider{}
+func NewProviderRegistry() *ProviderRegistry {
+	return &ProviderRegistry{}
 }

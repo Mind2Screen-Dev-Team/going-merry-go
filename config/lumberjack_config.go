@@ -17,7 +17,7 @@ func NewLumberJackConfig(filename string) *lumberJackConfig {
 	return &lumberJackConfig{filename}
 }
 
-func (lc *lumberJackConfig) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (lc *lumberJackConfig) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	reg.Dependency.LumberjackLogger = &lumberjack.Logger{
 		Filename:   path.Join(reg.Config.Log.Path, lc.filename),
 		MaxBackups: reg.Config.Log.MaxBackups, // how much backup files
@@ -26,4 +26,5 @@ func (lc *lumberJackConfig) Loader(ctx context.Context, reg *registry.AppRegistr
 		LocalTime:  reg.Config.Log.LocalTime,  // default UTC
 		Compress:   reg.Config.Log.Compress,   // default false
 	}
+	return nil
 }

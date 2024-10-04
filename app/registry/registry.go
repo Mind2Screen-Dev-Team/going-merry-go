@@ -4,18 +4,18 @@ import "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 
 type AppRegistry struct {
 	Config     *appconfig.AppConfig
-	Dependency *AppDependency
-	Provider   *AppProvider
-	Repository *AppRepository
-	Service    *AppService
+	Dependency *DependencyRegistry
+	Provider   *ProviderRegistry
+	Repository *RepositoryRegistry
+	Service    *ServiceRegistry
 }
 
 func NewAppRegistry(cfg *appconfig.AppConfig) *AppRegistry {
 	return &AppRegistry{
 		Config:     cfg,
-		Dependency: NewAppDependency(),
-		Provider:   NewAppProvider(),
-		Repository: NewAppRepository(),
-		Service:    NewAppService(),
+		Dependency: NewDependencyRegistry(),
+		Provider:   NewProviderRegistry(),
+		Repository: NewRepositoryRegistry(),
+		Service:    NewServiceRegistry(),
 	}
 }

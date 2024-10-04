@@ -9,9 +9,9 @@ import (
 	repo_impl "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/impl"
 )
 
-func AppRepositoryLoader(reg *registry.AppRegistry) {
+func RepositoryRegistryLoader(reg *registry.AppRegistry) error {
 	// # Load All Repository
-	bootstrap.LoadRepository(
+	return bootstrap.LoadRegistry(
 		context.Background(),
 
 		// Link Dependency

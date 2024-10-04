@@ -12,6 +12,7 @@ func RegisterRegistry(reg *registry.AppRegistry) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 
 		// # Assign a Value To Context
+		ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP, reg)
 		ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_CONFIG, reg.Config)
 		ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_DEPENDENCY, reg.Dependency)
 		ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_REPOSITORY, reg.Repository)

@@ -51,6 +51,7 @@ func (h *HTTPServer) Create(ctx context.Context) (*http.Server, error) {
 		BaseContext: func(l net.Listener) context.Context {
 
 			// # Assign a Value To Context
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP, h.reg)
 			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_CONFIG, h.reg.Config)
 			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_DEPENDENCY, h.reg.Dependency)
 			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_REPOSITORY, h.reg.Repository)

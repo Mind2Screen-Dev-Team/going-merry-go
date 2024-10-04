@@ -53,7 +53,7 @@ func (o *otelClient) NewGrpcConnection(cfg *appconfig.AppConfig) (*grpc.ClientCo
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create otel gRPC connection to collector: %w", err)
+		return nil, fmt.Errorf("'failed to create otel gRPC connection to collector': %w", err)
 	}
 
 	return conn, err
@@ -84,7 +84,7 @@ func (o *otelClient) InitTracerProvider(ctx context.Context, cfg *appconfig.AppC
 		// Set up a trace exporter
 		traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithGRPCConn(conn))
 		if err != nil {
-			return nil, fmt.Errorf("failed to create trace exporter: %w", err)
+			return nil, fmt.Errorf("'failed to create otel trace exporter': %w", err)
 		}
 
 		// Register the trace exporter with a TracerProvider, using a batch
@@ -121,7 +121,7 @@ func (o *otelClient) InitMeterProvider(ctx context.Context, cfg *appconfig.AppCo
 	if cfg.Otel.MetricEnabled {
 		metricExporter, err := otlpmetricgrpc.New(ctx, otlpmetricgrpc.WithGRPCConn(conn))
 		if err != nil {
-			return nil, fmt.Errorf("failed to create metrics exporter: %w", err)
+			return nil, fmt.Errorf("'failed to create otel metrics exporter': %w", err)
 		}
 
 		meterProvider = sdkmetric.NewMeterProvider(
@@ -140,30 +140,31 @@ func (o *otelClient) InitMeterProvider(ctx context.Context, cfg *appconfig.AppCo
 	return meterShutdownFn, nil
 }
 
-func (o *otelClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
+func (o *otelClient) Loader(ctx context.Context, reg *registry.AppRegistry) error {
 	otelGrpcConn, err := o.NewGrpcConnection(reg.Config)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("'failed to init otel grpc connection': %w", err)
 	}
 
 	otelResource, err := o.NewResource(ctx, reg.Config)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("'failed to init otel resource': %w", err)
 	}
 
 	shutdownTracerProviderFn, err := o.InitTracerProvider(ctx, reg.Config, otelResource, otelGrpcConn)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("'failed to init otel tracer provider': %w", err)
 	}
 
 	shutdownMeterProviderFn, err := o.InitMeterProvider(ctx, reg.Config, otelResource, otelGrpcConn)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("'failed to init otel meter provider': %w", err)
 	}
 
 	reg.Dependency.OtelModule = o.param.Module
 	reg.Dependency.OtelGrpcConn = otelGrpcConn
 	reg.Dependency.OtelResource = otelResource
+
 	reg.Dependency.OtelShutdownTracerProviderFn = shutdownTracerProviderFn
 	reg.Dependency.OtelShutdownMeterProviderFn = shutdownMeterProviderFn
 
@@ -180,4 +181,6 @@ func (o *otelClient) Loader(ctx context.Context, reg *registry.AppRegistry) {
 			attribute.String("server.addr", o.param.ServerAddress),
 		),
 	)
+
+	return nil
 }

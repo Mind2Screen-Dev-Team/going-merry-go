@@ -20,7 +20,7 @@ import (
 
 // # DEPENDENCY
 
-type AppDependency struct {
+type DependencyRegistry struct {
 	// register your dependency on here
 	ZeroLogDefaultFields map[string]any
 	LumberjackLogger     *lumberjack.Logger
@@ -41,6 +41,6 @@ type AppDependency struct {
 	NatsJetStreamConn xlazy.Loader[jetstream.JetStream]
 }
 
-func NewAppDependency() *AppDependency {
-	return &AppDependency{}
+func NewDependencyRegistry() *DependencyRegistry {
+	return &DependencyRegistry{}
 }
