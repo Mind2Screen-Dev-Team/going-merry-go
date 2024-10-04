@@ -11,7 +11,6 @@ A Go project starter kit with essential tools and structures.
 
 ### Todo
 - Docker Integration
-- Open Telemetry Integration
 - Open API Generator Docs
 - CMD Generator handler, middleware, router, repo and service
 - Unit Test
@@ -25,6 +24,7 @@ A Go project starter kit with essential tools and structures.
 - DB migrations and seeders
 - Logging
 - Makefile Runner
+- Open Telemetry Integration
 
 ## Tips
 
@@ -37,6 +37,7 @@ go install github.com/tsliwowicz/go-wrk@latest
 
 - Running `Go-Wrk`
 ```bash
+go-wrk -c 5000 -d 5 -M "GET" http://localhost:8081/health
 go-wrk -c 5000 -d 5 -M "POST" -body "{\"email\": \"example@gmail.com\", \"password\": \"secret\"}" http://localhost:8081/api/v1/auth/login
 ```
 
