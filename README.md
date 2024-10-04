@@ -20,6 +20,7 @@ A Go project starter kit with essential tools and structures.
 - Setup Basic Generator Configuration
 - Registry Dependency, Repository and Service
 - HTTP Handler and Router Loader
+- HTTP Interceptor Handler
 - DTO Validation
 - DB migrations and seeders
 - Logging
