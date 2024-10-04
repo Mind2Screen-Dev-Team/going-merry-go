@@ -9,7 +9,9 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttputil"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xtracer"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xvalidate"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type HandlerAuth struct {
@@ -17,7 +19,14 @@ type HandlerAuth struct {
 }
 
 func (h HandlerAuth) Login(rw http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var (
+		ctx  = r.Context()
+		span trace.Span
+	)
+
+	ctx, span = xtracer.Start(ctx, "login.handler.process")
+	defer span.End()
+
 	data := xhttputil.LoadInput[dto.AuthLoginReqDTO](ctx)
 
 	// # Example Basic Response Builder
@@ -31,6 +40,7 @@ func (h HandlerAuth) Login(rw http.ResponseWriter, r *http.Request) {
 	// )
 
 	if err := data.ValidateWithContext(ctx); err != nil {
+		span.RecordError(err)
 		if errs, ok := xvalidate.IsErrors(err); ok {
 			resp.StatusCode(http.StatusUnprocessableEntity).Code(restkey.INVALID_ARGUMENT).Error(errs).Msg("invalid validation request data").JSON()
 			return

@@ -11,6 +11,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/minioconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/mysqlconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/natsconfig"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/otelconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/redisconfig"
 	"github.com/apple/pkl-go/pkl"
 )
@@ -34,11 +35,14 @@ type AppConfig struct {
 	// MySql Configuration
 	Mysql *mysqlconfig.MySQLConfig `pkl:"mysql"`
 
-	// Redis Configuration
-	Redis *redisconfig.RedisConfig `pkl:"redis"`
-
 	// Nats Configuration
 	Nats *natsconfig.NatsConfig `pkl:"nats"`
+
+	// Otel Configuration
+	Otel *otelconfig.OtelConfig `pkl:"otel"`
+
+	// Redis Configuration
+	Redis *redisconfig.RedisConfig `pkl:"redis"`
 
 	// Thrid-Party Configuration
 	ThridParty map[string]map[string]any `pkl:"thridParty"`

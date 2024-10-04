@@ -9,6 +9,9 @@ import (
 )
 
 type AppDependencyLoaderParams struct {
+	Module           string
+	ServerName       string
+	ServerAddr       string
 	LogFilename      string
 	LogDefaultFields map[string]any
 }
@@ -22,6 +25,12 @@ func AppDependencyLoader(ctx context.Context, reg *registry.AppRegistry, param A
 		// # List of Dependency
 		config.NewLumberJackConfig(param.LogFilename),
 		config.NewZeroLogConfig(param.LogDefaultFields),
+		config.NewOtelClient(config.OtelParam{
+			Module:        param.Module,
+			ServerName:    param.ServerName,
+			ServerAddress: param.ServerAddr,
+		}),
+
 		config.NewMinioClient(),
 		config.NewHttpinCore(),
 		config.NewMySqlX(),

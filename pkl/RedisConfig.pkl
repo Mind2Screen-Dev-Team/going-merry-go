@@ -8,7 +8,7 @@ class Auth {
   enabled: Boolean = true
 
   /// Authorization username
-  username: String = "mysql"
+  username: String = "default"
 
   /// Authorization password
   password: String = "secret"

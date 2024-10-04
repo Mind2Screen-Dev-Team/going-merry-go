@@ -65,21 +65,29 @@ mysql {
     password = "secret"
   }
 }
+nats {
+  enabled = true
+  host = "localhost"
+  port = 4222
+  auth {
+    enabled = true
+    username = "nats"
+    password = "secret"
+  }
+}
+otel {
+  tracerEnabled = false
+  metricEnabled = false
+  grpc {
+    port = 4317
+    host = "localhost"
+  }
+}
 redis {
   enabled = true
   host = "localhost"
   port = 6379
   db = 0
-  auth {
-    enabled = true
-    username = "mysql"
-    password = "secret"
-  }
-}
-nats {
-  enabled = true
-  host = "localhost"
-  port = 4222
   auth {
     enabled = true
     username = "mysql"

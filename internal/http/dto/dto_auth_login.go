@@ -6,6 +6,7 @@ import (
 
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/config"
 	repo_attribute "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/repo/attribute"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xtracer"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xvalidate"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -22,6 +23,9 @@ type AuthLoginReqDTO struct {
 }
 
 func (a *AuthLoginReqDTO) ValidateWithContext(ctx context.Context) error {
+	ctx, span := xtracer.Start(ctx, "dto.auth.login.validation")
+	defer span.End()
+
 	return xvalidate.WrapperValidation(validation.ValidateStructWithContext(ctx, &a.Payload,
 		// Email cannot be empty, email must exist on database
 		validation.Field(&a.Payload.Email, validation.Required, a.IsEmailExists(ctx)),
@@ -32,16 +36,24 @@ func (a *AuthLoginReqDTO) ValidateWithContext(ctx context.Context) error {
 
 func (a *AuthLoginReqDTO) IsEmailExists(ctx context.Context) validation.Rule {
 	return validation.By(func(value any) error {
+		ctx, span := xtracer.Start(ctx, "dto.auth.login.validation.check.email.existence")
+		defer span.End()
+
 		v, _ := value.(string)
 		repo := config.LoadAppRepository(ctx)
 		if repo == nil || repo.User == nil {
-			return validation.NewInternalError(errors.New("invalid load user repository"))
+			err := errors.New("invalid load user repository")
+			span.RecordError(err)
+			return validation.NewInternalError(err)
 		}
 
 		count, err := repo.User.Count(ctx, repo_attribute.UserFindAttribute{
 			Email: null.NewString(v, true),
 		})
 		if err != nil || count <= 0 {
+			if err != nil {
+				span.RecordError(err)
+			}
 			return validation.NewError("email_not_exists", "user email not exists")
 		}
 

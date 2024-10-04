@@ -8,7 +8,7 @@ class Auth {
   enabled: Boolean = true
 
   /// Nats authorization username
-  username: String(!isEmpty) = "mysql"
+  username: String(!isEmpty) = "nats"
 
   /// Nats authorization password
   password: String(!isEmpty) = "secret"

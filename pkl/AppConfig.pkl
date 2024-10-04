@@ -8,6 +8,7 @@ import "LogConfig.pkl"
 import "MinioConfig.pkl"
 import "MySQLConfig.pkl"
 import "NatsConfig.pkl"
+import "OtelConfig.pkl"
 import "RedisConfig.pkl"
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.8.0#/go.pkl"
@@ -30,11 +31,14 @@ minio: MinioConfig
 /// MySql Configuration
 mysql: MySQLConfig
 
-/// Redis Configuration
-redis: RedisConfig
-
 /// Nats Configuration
 nats: NatsConfig
+
+/// Otel Configuration
+otel: OtelConfig
+
+/// Redis Configuration
+redis: RedisConfig
 
 /// Thrid-Party Configuration
 thridParty: Mapping<String, Mapping<String, Any>>

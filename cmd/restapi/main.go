@@ -32,9 +32,8 @@ func main() {
 	}
 
 	// # Handle Gracefully Shutdown Signal
-	stopCh := make(chan os.Signal, 1)
-	signal.Notify(
-		stopCh,
+	interruptCtx, interruptFn := signal.NotifyContext(
+		context.Background(),
 		os.Interrupt,
 		syscall.SIGHUP,
 		syscall.SIGINT,
@@ -42,12 +41,20 @@ func main() {
 		syscall.SIGQUIT,
 	)
 
+	defer interruptFn()
+
+	addr := fmt.Sprintf("http://%s:%d", cfg.Http.Host, cfg.Http.Port)
+
 	// # Load Application Registry
-	reg := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+	reg := app.LoadRegistry(interruptCtx, cfg, app.AppDependencyLoaderParams{
+		Module:      "rest.api.app",
+		ServerName:  cfg.Http.ServiceName,
+		ServerAddr:  addr,
 		LogFilename: fmt.Sprintf("%s.log", cfg.Http.ServiceName),
 		LogDefaultFields: map[string]any{
 			"serviceName":    cfg.Http.ServiceName,
-			"serviceAddress": fmt.Sprintf("http://%s:%d", cfg.Http.Host, cfg.Http.Port),
+			"serviceAddress": addr,
+			"servicePID":     os.Getpid(),
 		},
 	})
 
@@ -102,7 +109,7 @@ func main() {
 		logger.Fatal("Failed to Load Config HTTP Server", "error", err)
 	}
 
-	srv, err := httpServer.Create(context.Background())
+	srv, err := httpServer.Create(interruptCtx)
 	if err != nil {
 		logger.Fatal("Failed to Load Initiator HTTP Server", "error", err)
 	}
@@ -115,7 +122,7 @@ func main() {
 		logger.Info("Stop HTTP Service API")
 	}()
 
-	<-stopCh
+	<-interruptCtx.Done()
 
 	logger.Info("Perform shutdown with a maximum timeout of 30 seconds, HTTP Service API")
 	releaseCtx, releaseFn := context.WithTimeout(context.Background(), 30*time.Second)
@@ -124,9 +131,28 @@ func main() {
 	defer func() {
 		releaseFn()
 
+		if err := reg.Dependency.OtelShutdownTracerProviderFn(interruptCtx); err != nil {
+			logger.Error("failed to shutdown tracer provider", "error", err)
+		}
+
+		if err := reg.Dependency.OtelShutdownMeterProviderFn(interruptCtx); err != nil {
+			logger.Error("failed to shutdown meter provider", "error", err)
+		}
+
+		if reg.Dependency.OtelGrpcConn != nil {
+			if err := reg.Dependency.OtelGrpcConn.Close(); err != nil {
+				logger.Error("Error Close Otel GRPC Connection", "otelGrpcAddr", fmt.Sprintf("%s:%d", cfg.Otel.Grpc.Host, cfg.Otel.Grpc.Port), "error", err)
+			} else {
+				logger.Info("Successfully Close Otel GRPC Connection", "otelGrpcAddr", fmt.Sprintf("%s:%d", cfg.Otel.Grpc.Host, cfg.Otel.Grpc.Port))
+			}
+		}
+
 		if reg.Dependency.MySqlDB.Loaded() {
-			reg.Dependency.MySqlDB.Value().DB.Close()
-			logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
+			if err := reg.Dependency.MySqlDB.Value().DB.Close(); err != nil {
+				logger.Error("Error Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db, "error", err)
+			} else {
+				logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
+			}
 		}
 
 		if reg.Dependency.NatsConn.Loaded() {
@@ -136,7 +162,7 @@ func main() {
 
 		logger.Info("Successfully gracefuly Stop HTTP Service API, application is exited properly")
 		if err := reg.Dependency.LumberjackLogger.Rotate(); err != nil {
-			log.Fatalf("rest-api rotate logging file, got error: %+v\n", err)
+			log.Fatalf("rest-api service rotate logging file, got error: %+v\n", err)
 		}
 	}()
 

@@ -12,7 +12,7 @@ var (
 )
 
 func FromReqCtx(ctx context.Context) Logger {
-	v, ok := ctx.Value(ctxkey.HTTP_SERVER_APP_LOGGER).(*zerolog.Logger)
+	v, ok := ctx.Value(ctxkey.REGISTRY_APP_LOGGER).(*zerolog.Logger)
 	if !ok {
 		v = &nopZeroLogger
 	}

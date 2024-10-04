@@ -41,9 +41,9 @@ func RequestID(next http.Handler) http.Handler {
 func Logger(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		var (
-			ctx     = r.Context()
-			logger  = xlogger.FromReqCtx(ctx)
-			traceId = ctx.Value(ctxkey.RequestIDKey)
+			ctx       = r.Context()
+			logger    = xlogger.FromReqCtx(ctx)
+			requestId = ctx.Value(ctxkey.RequestIDKey)
 
 			ww   = middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 			resp = xresponse.NewRestResponse[any, any](r, ww)
@@ -56,7 +56,7 @@ func Logger(next http.Handler) http.Handler {
 				logger.Error(
 					// msg
 					"incoming request panic",
-					"traceId", traceId,
+					"requestId", requestId,
 
 					// fields
 					"recover", r,
@@ -71,7 +71,7 @@ func Logger(next http.Handler) http.Handler {
 				"incoming request",
 
 				// fields
-				"traceId", traceId,
+				"requestId", requestId,
 				"remoteAddr", r.RemoteAddr,
 				"path", r.URL.Path,
 				"proto", r.Proto,

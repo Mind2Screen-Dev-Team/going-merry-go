@@ -4,8 +4,11 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xtracer"
 	"github.com/ggicci/httpin"
 	"github.com/ggicci/httpin/core"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/guregu/null.v4"
 )
 
@@ -17,17 +20,26 @@ import (
 //		input := httputil.LoadInput[dto.AuthLoginReqDTO](ctx)
 //	}
 func LoadInput[T any](ctx context.Context) *T {
+	var span trace.Span
+
+	ctx, span = xtracer.Start(ctx, "load.input.from.request")
+	defer span.End()
+
 	input, ok := ctx.Value(httpin.Input).(*T)
 	if !ok {
 		var in T
 		return &in
 	}
+
 	return input
 }
 
 type InputOption interface {
 	// # Ignored because this already set on default config.
 	// WithErrorHandler(fn func(w http.ResponseWriter, r *http.Request, err error)) InputOptionFn
+
+	// Otel span operation name
+	WithOperationName(n string) InputOptionFn
 
 	/*
 		Understanding Max Memory Allocation, i.e:
@@ -47,6 +59,7 @@ type inputOptionValues struct {
 	// # Ignored because this already set on default config.
 	// errorHandler func(w http.ResponseWriter, r *http.Request, err error)
 
+	operation               null.String
 	maxMemory               null.Int
 	nestedDirectivesEnabled null.Bool
 }
@@ -63,6 +76,12 @@ func NewInputOption() InputOption {
 // 		i.errorHandler = fn
 // 	}
 // }
+
+func (inputOptions) WithOperationName(n string) InputOptionFn {
+	return func(i *inputOptionValues) {
+		i.operation = null.NewString(n, true)
+	}
+}
 
 func (inputOptions) WithMaxMemory(n int64) InputOptionFn {
 	return func(i *inputOptionValues) {
@@ -100,5 +119,9 @@ func WithInput[T any](opts ...InputOptionFn) func(http.Handler) http.Handler {
 	}
 
 	var in T
-	return httpin.NewInput(&in, copts...)
+	return func(next http.Handler) http.Handler {
+		return otelhttp.NewMiddleware(opt.operation.String)(
+			httpin.NewInput(&in, copts...)(next),
+		)
+	}
 }

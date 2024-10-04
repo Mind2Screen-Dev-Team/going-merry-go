@@ -51,12 +51,13 @@ func (h *HTTPServer) Create(ctx context.Context) (*http.Server, error) {
 		BaseContext: func(l net.Listener) context.Context {
 
 			// # Assign a Value To Context
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_CONFIG, h.reg.Config)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_DEPENDENCY, h.reg.Dependency)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_REPOSITORY, h.reg.Repository)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_PROVIDER, h.reg.Provider)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_SERVICE, h.reg.Service)
-			ctx = context.WithValue(ctx, ctxkey.HTTP_SERVER_APP_LOGGER, &h.reg.Dependency.ZeroLogger)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_CONFIG, h.reg.Config)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_DEPENDENCY, h.reg.Dependency)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_REPOSITORY, h.reg.Repository)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_PROVIDER, h.reg.Provider)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_SERVICE, h.reg.Service)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_LOGGER, &h.reg.Dependency.ZeroLogger)
+			ctx = context.WithValue(ctx, ctxkey.REGISTRY_APP_TRACER, h.reg.Dependency.Tracer)
 
 			return ctx
 		},

@@ -61,6 +61,7 @@ setup:
 # Command to build config commands
 
 pkl-gen:
+	@rm -rf ./gen/pkl
 	@pkl-gen-go ./pkl/AppConfig.pkl --base-path $(APP_BASE_MODULE)
 
 # Command to run golang commands

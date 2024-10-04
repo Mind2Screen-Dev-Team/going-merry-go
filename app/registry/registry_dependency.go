@@ -1,7 +1,13 @@
 package registry
 
 import (
+	"context"
+
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlazy"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/trace"
+	"google.golang.org/grpc"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/minio/minio-go/v7"
@@ -19,11 +25,20 @@ type AppDependency struct {
 	ZeroLogDefaultFields map[string]any
 	LumberjackLogger     *lumberjack.Logger
 	ZeroLogger           zerolog.Logger
-	Storage              xlazy.Loader[*minio.Client]
-	MySqlDB              xlazy.Loader[*sqlx.DB]
-	Redis                xlazy.Loader[*redis.Client]
-	NatsConn             xlazy.Loader[*nats.Conn]
-	NatsJetStreamConn    xlazy.Loader[jetstream.JetStream]
+
+	OtelModule                   string
+	OtelGrpcConn                 *grpc.ClientConn
+	OtelResource                 *resource.Resource
+	OtelShutdownTracerProviderFn func(context.Context) error
+	OtelShutdownMeterProviderFn  func(context.Context) error
+	Tracer                       trace.Tracer
+	Metric                       metric.Meter
+
+	Storage           xlazy.Loader[*minio.Client]
+	MySqlDB           xlazy.Loader[*sqlx.DB]
+	Redis             xlazy.Loader[*redis.Client]
+	NatsConn          xlazy.Loader[*nats.Conn]
+	NatsJetStreamConn xlazy.Loader[jetstream.JetStream]
 }
 
 func NewAppDependency() *AppDependency {

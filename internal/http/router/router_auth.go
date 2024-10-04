@@ -5,6 +5,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/dto"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/internal/http/handler"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttputil"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xtracer"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -28,9 +29,12 @@ func (r *routerAuthImpl) Route() {
 	r.router.
 		With(
 			xhttputil.WithInput[dto.AuthLoginReqDTO](
+				// Operation Name
+				inputOption.WithOperationName("rest.api.v1.auth.login.request.decoder"),
+
 				// Max Memory Allocation: 15 MB
 				inputOption.WithMaxMemory(15*1024*1024),
 			),
 		).
-		Post("/api/v1/auth/login", r.handler.Login)
+		Post("/api/v1/auth/login", xtracer.NewTracerHandlerFunc(r.handler.Login, "rest.api.v1.auth.login.handler"))
 }

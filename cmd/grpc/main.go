@@ -16,42 +16,13 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 
-	interceptor_stream "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/stream"
-	interceptor_unary "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/unary"
+	icpt_stream "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/stream"
+	icpt_unary "github.com/Mind2Screen-Dev-Team/go-skeleton/internal/grpc/interceptor/unary"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 )
-
-// InterceptorLogger adapts zerolog logger to interceptor logger.
-// This code is simple enough to be copied and not imported.
-func InterceptorLogger(l zerolog.Logger) logging.Logger {
-	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
-		md, _ := metadata.FromIncomingContext(ctx)
-
-		// Trace ID
-		if traceId := md.Get("traceId"); len(traceId) > 0 {
-			fields = append(fields, "traceId", traceId[0])
-		}
-
-		switch lvl {
-		case logging.LevelDebug:
-			l.Debug().Fields(fields).Msg(msg)
-		case logging.LevelInfo:
-			l.Info().Fields(fields).Msg(msg)
-		case logging.LevelWarn:
-			l.Warn().Fields(fields).Msg(msg)
-		case logging.LevelError:
-			l.Error().Fields(fields).Msg(msg)
-		default:
-			panic(fmt.Sprintf("unknown level %v", lvl))
-		}
-	})
-}
 
 func main() {
 	// # Parse App Config Path
@@ -65,20 +36,21 @@ func main() {
 	}
 
 	// # Handle Gracefully Shutdown Signal
-	stopCh := make(chan os.Signal, 1)
-	signal.Notify(
-		stopCh,
+	interruptCtx, interruptFn := signal.NotifyContext(
+		context.Background(),
 		os.Interrupt,
 		syscall.SIGHUP,
 		syscall.SIGINT,
 		syscall.SIGTERM,
 		syscall.SIGQUIT,
 	)
+	defer interruptFn()
 
 	address := fmt.Sprintf("%s:%d", cfg.Grpc.Host, cfg.Grpc.Port)
 
 	// # Load Application Registry
 	reg := app.LoadRegistry(context.Background(), cfg, app.AppDependencyLoaderParams{
+		Module:      "grpc.api.app",
 		LogFilename: fmt.Sprintf("%s.log", cfg.Grpc.ServiceName),
 		LogDefaultFields: map[string]any{
 			"serviceName":    cfg.Grpc.ServiceName,
@@ -96,7 +68,7 @@ func main() {
 
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
-		logger.Info("Start Listen GRPC Service API", "error", err)
+		logger.Fatal("Start Listen GRPC Service API", "error", err)
 	}
 
 	var opts []grpc.ServerOption
@@ -117,21 +89,17 @@ func main() {
 		)
 	}
 
-	logInt := InterceptorLogger(reg.Dependency.ZeroLogger)
-	logOpts := []logging.Option{
-		logging.WithLogOnEvents(logging.StartCall, logging.FinishCall),
-		// Add any other option (check functions starting with logging.With).
-	}
-
 	// # Set GRPC Unary / Stream Interceptors
 	opts = append(opts,
-		grpc.ChainUnaryInterceptor(
-			interceptor_unary.TraceIDInterceptor(),
-			logging.UnaryServerInterceptor(logInt, logOpts...),
-		),
 		grpc.ChainStreamInterceptor(
-			interceptor_stream.TraceIDInterceptor(),
-			logging.StreamServerInterceptor(logInt, logOpts...),
+			icpt_stream.RegisterRegistry(reg),
+			icpt_stream.RequestIDInterceptor(),
+			icpt_stream.Logging(reg.Dependency.ZeroLogger),
+		),
+		grpc.ChainUnaryInterceptor(
+			icpt_unary.RegisterRegistry(reg),
+			icpt_unary.RequestIDInterceptor(),
+			icpt_unary.Logging(reg.Dependency.ZeroLogger),
 		),
 	)
 
@@ -151,13 +119,33 @@ func main() {
 		logger.Info("Stop GRPC Service API")
 	}()
 
-	<-stopCh
+	<-interruptCtx.Done()
 
 	// Gracefully Stop Service and Close connection
 	defer func() {
+
+		if err := reg.Dependency.OtelShutdownTracerProviderFn(interruptCtx); err != nil {
+			logger.Error("failed to shutdown tracer provider", "error", err)
+		}
+
+		if err := reg.Dependency.OtelShutdownMeterProviderFn(interruptCtx); err != nil {
+			logger.Error("failed to shutdown meter provider", "error", err)
+		}
+
+		if reg.Dependency.OtelGrpcConn != nil {
+			if err := reg.Dependency.OtelGrpcConn.Close(); err != nil {
+				logger.Error("Error Close Otel GRPC Connection", "otelGrpcAddr", fmt.Sprintf("%s:%d", cfg.Otel.Grpc.Host, cfg.Otel.Grpc.Port), "error", err)
+			} else {
+				logger.Info("Successfully Close Otel GRPC Connection", "otelGrpcAddr", fmt.Sprintf("%s:%d", cfg.Otel.Grpc.Host, cfg.Otel.Grpc.Port))
+			}
+		}
+
 		if reg.Dependency.MySqlDB.Loaded() {
-			reg.Dependency.MySqlDB.Value().DB.Close()
-			logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
+			if err := reg.Dependency.MySqlDB.Value().DB.Close(); err != nil {
+				logger.Error("Error Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db, "error", err)
+			} else {
+				logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
+			}
 		}
 
 		if reg.Dependency.NatsConn.Loaded() {

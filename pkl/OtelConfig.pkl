@@ -1,0 +1,21 @@
+@go.Package { name = "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/otelconfig" }
+module OtelConfig
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class Grpc {
+    /// The hostname that Otel listens on
+    host: String(!isEmpty) = "localhost"
+
+    /// The port that Otel listens on
+    port: Int = 4317
+}
+
+/// Otel Tracer is enabled
+tracerEnabled: Boolean = false
+
+/// Otel Metric is enabled
+metricEnabled: Boolean = false
+
+/// Otel GRPC
+grpc: Grpc
