@@ -1,7 +1,7 @@
 amends "../AppConfig.pkl"
 
 grpc {
-  serviceName = "go-skeleton-app-grpc-api"
+  serviceName = "APP_GRPC_API"
   host = "127.0.0.1"
   port = 8081
   keepAlive {
@@ -20,7 +20,7 @@ grpc {
   }
 }
 http {
-  serviceName = "go-skeleton-app-rest-api"
+  serviceName = "APP_REST_API"
   host = "127.0.0.1"
   port = 8080
   idleTimeout = 30
