@@ -26,7 +26,7 @@ import (
 
 func main() {
 	// # Parse App Config Path
-	cfgPath := flag.String("cfg", "pkl/config/example.pkl", "Load Configuration PKL Path File")
+	cfgPath := flag.String("cfg", "./example.pkl", "Load Configuration PKL Path File")
 	flag.Parse()
 
 	// # Load App Config

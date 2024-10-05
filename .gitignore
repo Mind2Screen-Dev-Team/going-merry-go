@@ -40,3 +40,7 @@ storage/logs
 
 # environment
 .env
+
+# pkl lang configuration
+dev.pkl
+prod.pkl

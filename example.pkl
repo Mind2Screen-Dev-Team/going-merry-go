@@ -1,4 +1,4 @@
-amends "../AppConfig.pkl"
+amends "pkl/AppConfig.pkl"
 
 grpc {
   serviceName = "app_grpc_api"
