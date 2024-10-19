@@ -63,6 +63,7 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/DataDog/gostackparse v0.7.0
+	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.1.0
 	github.com/rs/zerolog v1.33.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.55.0
