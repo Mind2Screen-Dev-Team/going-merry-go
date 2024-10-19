@@ -47,7 +47,7 @@ func Shutdown(service string, reg *registry.AppRegistry, fns ...func()) {
 			logger.Info("Successfully Close Nats Connection", "natsAddr", fmt.Sprintf("%s:%d", reg.Config.Mysql.Host, reg.Config.Mysql.Port))
 		}
 
-		logger.Info("Successfully gracefuly Stop HTTP Service API, application is exited properly")
+		logger.Info("Successfully gracefuly Stop '" + service + "' Service, application is exited properly")
 		if err := reg.Dependency.LumberjackLogger.Rotate(); err != nil {
 			log.Fatalf("%q service rotate logging file, got error: %+v\n", service, err)
 		}
