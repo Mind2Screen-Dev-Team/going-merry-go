@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,6 +17,10 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 
 	"github.com/go-chi/chi/v5"
+)
+
+const (
+	APP_NAME = "rest-api"
 )
 
 func main() {
@@ -59,9 +62,11 @@ func main() {
 	})
 
 	// # Must Load Dependency At Startup
-	if err := app.MustLoadDependencyAtStartup("rest-api", reg); err != nil {
+	if err := app.Startup(APP_NAME, reg); err != nil {
 		panic(err)
 	}
+
+	reg.InterruptContext = interruptCtx
 
 	// # Init Logger
 	logger := xlogger.NewZeroLogger(&reg.Dependency.ZeroLogger)
@@ -125,48 +130,15 @@ func main() {
 	<-interruptCtx.Done()
 
 	logger.Info("Perform shutdown with a maximum timeout of 30 seconds, HTTP Service API")
-	releaseCtx, releaseFn := context.WithTimeout(context.Background(), 30*time.Second)
+	shutdownCtx, shutdownFn := context.WithTimeout(context.Background(), 30*time.Second)
+	defer shutdownFn()
+
+	reg.ShutdownContext = shutdownCtx
 
 	// Gracefully Stop Service and Close connection
-	defer func() {
-		releaseFn()
+	defer app.Shutdown(APP_NAME, reg)
 
-		if err := reg.Dependency.OtelShutdownTracerProviderFn(interruptCtx); err != nil {
-			logger.Error("failed to shutdown tracer provider", "error", err)
-		}
-
-		if err := reg.Dependency.OtelShutdownMeterProviderFn(interruptCtx); err != nil {
-			logger.Error("failed to shutdown meter provider", "error", err)
-		}
-
-		if reg.Dependency.OtelGrpcConn != nil {
-			if err := reg.Dependency.OtelGrpcConn.Close(); err != nil {
-				logger.Error("Error Close Otel GRPC Connection", "otelGrpcAddr", fmt.Sprintf("%s:%d", cfg.Otel.Grpc.Host, cfg.Otel.Grpc.Port), "error", err)
-			} else {
-				logger.Info("Successfully Close Otel GRPC Connection", "otelGrpcAddr", fmt.Sprintf("%s:%d", cfg.Otel.Grpc.Host, cfg.Otel.Grpc.Port))
-			}
-		}
-
-		if reg.Dependency.MySqlDB.Loaded() {
-			if err := reg.Dependency.MySqlDB.Value().DB.Close(); err != nil {
-				logger.Error("Error Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db, "error", err)
-			} else {
-				logger.Info("Successfully Close MySQL DB Connection", "mysqlAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port), "mysqlDB", cfg.Mysql.Db)
-			}
-		}
-
-		if reg.Dependency.NatsConn.Loaded() {
-			reg.Dependency.NatsConn.Value().Close()
-			logger.Info("Successfully Close Nats Connection", "natsAddr", fmt.Sprintf("%s:%d", cfg.Mysql.Host, cfg.Mysql.Port))
-		}
-
-		logger.Info("Successfully gracefuly Stop HTTP Service API, application is exited properly")
-		if err := reg.Dependency.LumberjackLogger.Rotate(); err != nil {
-			log.Fatalf("rest-api service rotate logging file, got error: %+v\n", err)
-		}
-	}()
-
-	if err := srv.Shutdown(releaseCtx); err != nil {
+	if err := srv.Shutdown(shutdownCtx); err != nil {
 		logger.Error("Error Shutdown HTTP Service API, application is exited properly", "error", err)
 	}
 }

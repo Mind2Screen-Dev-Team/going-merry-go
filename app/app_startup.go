@@ -7,7 +7,10 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 )
 
-func MustLoadDependencyAtStartup(service string, reg *registry.AppRegistry) error {
+func Startup(service string, reg *registry.AppRegistry, fns ...func()) error {
+	for _, fn := range fns {
+		fn()
+	}
 
 	if slices.Contains([]string{"rest-api", "grpc-api"}, service) {
 		// # Load MySQL First

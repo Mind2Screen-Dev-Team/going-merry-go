@@ -24,6 +24,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const (
+	APP_NAME = "grpc-api"
+)
+
 func main() {
 	// # Parse App Config Path
 	cfgPath := flag.String("cfg", "./example.pkl", "Load Configuration PKL Path File")
@@ -59,7 +63,7 @@ func main() {
 	})
 
 	// # Must Load Dependency At Startup
-	if err := app.MustLoadDependencyAtStartup("grpc-api", reg); err != nil {
+	if err := app.Startup(APP_NAME, reg); err != nil {
 		panic(err)
 	}
 

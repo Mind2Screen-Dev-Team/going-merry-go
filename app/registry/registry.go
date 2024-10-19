@@ -1,8 +1,15 @@
 package registry
 
-import "github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
+import (
+	"context"
+
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/gen/pkl/appconfig"
+)
 
 type AppRegistry struct {
+	InterruptContext context.Context
+	ShutdownContext  context.Context
+
 	Config     *appconfig.AppConfig
 	Dependency *DependencyRegistry
 	Provider   *ProviderRegistry
