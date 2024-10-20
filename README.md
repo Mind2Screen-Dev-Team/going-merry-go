@@ -1,5 +1,5 @@
 
-# 🚢 _Going-Merry-Go_ - Golang Skeleton
+# 🚢 _Going-Merry-Go_ - Project Skeleton
 
 Welcome aboard the **Going-Merry-Go**! Inspired by the iconic ship from the anime One Piece, this project is a robust and flexible Go project starter kit. It's designed to help you quickly set up your Go applications with the right structure and essential tools.
 
