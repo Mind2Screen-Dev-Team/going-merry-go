@@ -42,7 +42,7 @@ To get started with Going-Merry-Go, follow these steps:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/going-merry-go.git
+git clone https://github.com/Mind2Screen-Dev-Team/going-merry-go.git
 
 # Navigate to the project directory
 cd going-merry-go
