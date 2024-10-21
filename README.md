@@ -5,6 +5,88 @@ Welcome aboard the **Going-Merry-Go**! Inspired by the iconic ship from the anim
 
 ## 🗂 Project Structure
 
+```bash
+├── app
+│   ├── bootstrap      # Contains initialization logic for starting the application
+│   └── registry       # Manages dependency injection or service registration
+├── bin                # Holds executable files and scripts for running the application
+├── cmd
+│   ├── grpc           # Entry point for starting the gRPC server
+│   ├── restapi        # Entry point for starting the REST API server
+│   ├── scheduler      # Entry point for the scheduler service
+│   └── worker         # Entry point for worker processes or background jobs
+├── config             # Configuration files for the application
+├── constant
+│   ├── ctxkey         # Constants for context keys used across the application
+│   ├── rediskey       # Redis-related key constants
+│   └── restkey        # Constants specific to the REST API
+├── database
+│   ├── migrations     # Database migration scripts to manage schema changes
+│   └── seeders        # Seed data for initializing the database with default values
+├── docs
+│   └── vscode-ext     # Documentation for Visual Studio Code extensions or related setup
+├── gen
+│   ├── grpc
+│   │   ├── greating   # Auto-generated code for the "greating" gRPC service
+│   │   └── health     # Auto-generated code for the health check gRPC service
+│   └── pkl
+│       ├── appconfig  # Generated code for application configuration
+│       ├── grpcconfig # gRPC configuration details
+│       ├── httpconfig # HTTP server configuration details
+│       ├── jwtconfig  # JWT (JSON Web Token) configuration settings
+│       ├── logconfig
+│       │   └── timeformat # Time format settings for logging
+│       ├── minioconfig # MinIO (object storage) configuration
+│       ├── mysqlconfig # MySQL database configuration
+│       ├── natsconfig  # NATS (messaging system) configuration
+│       ├── otelconfig  # OpenTelemetry configuration for distributed tracing
+│       └── redisconfig # Redis database configuration
+├── internal
+│   ├── entity         # Data models and entities used in the application
+│   ├── grpc
+│   │   ├── interceptor
+│   │   │   ├── stream  # Stream interceptors for gRPC requests
+│   │   │   ├── unary   # Unary interceptors for gRPC requests
+│   │   │   └── util    # Utility functions for gRPC interceptors
+│   │   └── service    # gRPC service implementations
+│   ├── http
+│   │   ├── dto        # Data Transfer Objects for HTTP requests and responses
+│   │   ├── handler    # Handlers for processing HTTP requests
+│   │   ├── interceptor # Interceptors for HTTP requests
+│   │   ├── middleware # Middleware components for HTTP processing
+│   │   └── router     # Routing logic for HTTP endpoints
+│   ├── provider
+│   │   ├── api        # API providers or service interfaces
+│   │   ├── attribute  # Attribute-related logic or utilities
+│   │   └── impl       # Implementation of the providers
+│   ├── repo
+│   │   ├── api        # API for the repository layer
+│   │   ├── attribute  # Attribute-related logic for the repository layer
+│   │   └── impl       # Implementation of repositories
+│   ├── scheduler      # Scheduler logic for timed or recurring tasks
+│   ├── service
+│   │   ├── api        # Service interfaces
+│   │   ├── attribute  # Attribute-related logic for services
+│   │   └── impl       # Implementation of services
+│   └── worker
+│       ├── pub        # Publishing logic for worker processes
+│       └── sub        # Subscription logic for worker processes
+├── pkg
+│   ├── xfilter        # Utility for data filtering
+│   ├── xhttpin        # Helper functions for HTTP input processing
+│   ├── xhttputil      # Utilities for working with HTTP
+│   ├── xlazy          # Lazy evaluation utilities
+│   ├── xlogger        # Logging utilities and helpers
+│   ├── xresponse      # Utility for handling HTTP responses
+│   ├── xtracer        # Tools for distributed tracing
+│   └── xvalidate      # Input validation utilities
+├── pkl                # Placeholder for Pickle files for configuration
+├── protos             # Protocol buffer (.proto) files for defining gRPC services
+└── storage
+    ├── assets        # Static assets such as images or other resources
+    └── logs          # Log files generated by the application
+```
+
 The project is organized to support different modules such as REST API, gRPC, Pub/Sub, and Cron Jobs, making it easier for you to develop scalable and maintainable applications.
 
 ### Current Modules
