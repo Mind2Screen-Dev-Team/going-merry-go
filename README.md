@@ -3,7 +3,7 @@
 
 Welcome aboard the **Going-Merry-Go**! Inspired by the iconic ship from the anime One Piece, this project is a robust and flexible Go project starter kit. It's designed to help you quickly set up your Go applications with the right structure and essential tools.
 
-![Going Merry](./assets/going-merry.png "Going Merry")
+![Going Merry](./storage/assets/going-merry.jpg "Going Merry")
 
 ## 🗂 Project Structure
 
