@@ -10,6 +10,7 @@ import (
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/app/registry"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/ctxkey"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/constant/restkey"
+	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xhttputil"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xlogger"
 	"github.com/Mind2Screen-Dev-Team/go-skeleton/pkg/xresponse"
 
@@ -41,53 +42,88 @@ func RequestID(next http.Handler) http.Handler {
 func Logger(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		var (
-			ctx       = r.Context()
-			logger    = xlogger.FromReqCtx(ctx)
-			requestId = ctx.Value(ctxkey.RequestIDKey)
+			reqtime = time.Now().UnixMilli()
+			rw      = bytes.Buffer{}
+		)
 
-			ww   = middleware.NewWrapResponseWriter(w, r.ProtoMajor)
-			resp = xresponse.NewRestResponse[any, any](r, ww)
+		var (
+			rCopy = xhttputil.DeepCopyRequest(r, true)
+			ww    = middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+			resp  = xresponse.NewRestResponse[any, any](r, ww)
 		)
 
 		defer func() {
-			if r := recover(); r != nil && r != http.ErrAbortHandler {
-				stacks := debug.Stack()
-				parsed, _ := gostackparse.Parse(bytes.NewReader(stacks))
-				logger.Error(
-					// msg
-					"incoming request panic",
-					"requestId", requestId,
+			var (
+				panicked     bool
+				recorverErr  any
+				parsedStacks = make([]*gostackparse.Goroutine, 0)
+			)
 
-					// fields
-					"recover", r,
-					"stack", parsed,
-				)
+			if r := recover(); r != nil && r != http.ErrAbortHandler {
+				// assign
+				panicked = true
+				recorverErr = r
+
+				stacks := debug.Stack()
+				parsedStacks, _ = gostackparse.Parse(bytes.NewReader(stacks))
 
 				resp.StatusCode(http.StatusInternalServerError).Code(restkey.INTERNAL).Msg("internal server error").JSON()
 			}
 
-			logger.Info(
-				// msg
-				"incoming request",
-
-				// fields
-				"requestId", requestId,
-				"remoteAddr", r.RemoteAddr,
-				"path", r.URL.Path,
-				"proto", r.Proto,
-				"method", r.Method,
-				"userAgent", r.UserAgent(),
-				"status", http.StatusText(ww.Status()),
-				"statusCode", ww.Status(),
-
-				"bytesIn", r.ContentLength,
-				"bytesOut", ww.BytesWritten(),
-			)
-
+			go IncomingLogging(rCopy, ww, &rw, reqtime, panicked, recorverErr, parsedStacks)
 		}()
 
+		ww.Tee(&rw)
 		next.ServeHTTP(ww, r)
 	}
 
 	return http.HandlerFunc(fn)
+}
+
+func IncomingLogging(
+	// general params
+	r *http.Request,
+	ww middleware.WrapResponseWriter,
+	resbody *bytes.Buffer,
+	reqtime int64,
+
+	// panic params
+	panicked bool,
+	recorverErr any,
+	stacks []*gostackparse.Goroutine,
+) {
+	var (
+		ctx       = r.Context()
+		logger    = xlogger.FromReqCtx(ctx)
+		requestId = ctx.Value(ctxkey.RequestIDKey)
+		fields    = []any{
+			"request.id", requestId,
+			"request.time", reqtime,
+			"request.remote.address", r.RemoteAddr,
+			"request.path", r.URL.Path,
+			"request.proto", r.Proto,
+			"request.method", r.Method,
+			"request.user.agent", r.UserAgent(),
+			"request.body", ctx.Value(xhttputil.STR_REQ_BODY),
+			"response.status", http.StatusText(ww.Status()),
+			"response.status.code", ww.Status(),
+			"response.bytes.in", r.ContentLength,
+			"response.bytes.out", ww.BytesWritten(),
+			"response.body", resbody.String(),
+		}
+	)
+
+	defer resbody.Reset()
+
+	if panicked {
+		fields = append([]any{"panic.recover", recorverErr, "panic.stack", stacks}, fields...)
+	}
+
+	logger.Info(
+		// msg
+		"incoming request",
+
+		// fields
+		fields...,
+	)
 }
