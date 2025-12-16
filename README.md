@@ -1,6 +1,20 @@
 
 # 🚢 _Going-Merry-Go_ - Project Skeleton
 
+Got it — **big, loud, minimal** 👍
+Here are a few **one-screen options**. Pick one and paste it at the **top of README**.
+
+---
+
+## 🚫 **DEPRECATED**
+
+**This project is no longer maintained.**
+Please use our active alternatives instead:
+
+* [https://github.com/Mind2Screen-Dev-Team/thousand-sunny](https://github.com/Mind2Screen-Dev-Team/thousand-sunny)
+
+---
+
 Welcome aboard the **Going-Merry-Go**! Inspired by the iconic ship from the anime One Piece, this project is a robust and flexible Go project starter kit. It's designed to help you quickly set up your Go applications with the right structure and essential tools.
 
 ![Going Merry](./storage/assets/going-merry.jpg "Going Merry")
