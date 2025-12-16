@@ -1,9 +1,6 @@
 
 # 🚢 _Going-Merry-Go_ - Project Skeleton
 
-Got it — **big, loud, minimal** 👍
-Here are a few **one-screen options**. Pick one and paste it at the **top of README**.
-
 ---
 
 ## 🚫 **DEPRECATED**
